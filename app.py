@@ -63,7 +63,7 @@ k = float(st.sidebar.number_input("Escala k", value=1.0))
 theta = float(st.sidebar.number_input("Rotación θ", value=0.0))
 
 # centro rotación
-st.sidebar.subheader("📍 Centro de rotación")
+st.sidebar.subheader(" Centro de rotación")
 x0 = float(st.sidebar.number_input("x₀", value=0.0))
 y0 = float(st.sidebar.number_input("y₀", value=0.0))
 
@@ -83,7 +83,7 @@ usar_refx = st.sidebar.checkbox("Reflexión X")
 usar_refy = st.sidebar.checkbox("Reflexión Y")
 
 # -------- ANIMACIÓN --------
-st.sidebar.header("🎬 Animación")
+st.sidebar.header(" Animación")
 animar = st.sidebar.checkbox("Activar animación")
 velocidad = float(st.sidebar.slider("Velocidad", 0.1, 5.0, 1.0))
 
@@ -189,7 +189,7 @@ ax.legend()
 st.pyplot(fig)
 
 # -------- MATRICES --------
-st.subheader("🧮 Transformaciones paso a paso")
+st.subheader(" Transformaciones paso a paso")
 
 for nombre,A,b_vec in pasos:
     st.write(f"### {nombre}")
@@ -198,7 +198,7 @@ for nombre,A,b_vec in pasos:
     st.write("b =")
     st.write(b_vec)
 
-st.subheader("🔷 Transformación total")
+st.subheader(" Transformación total")
 st.write("A total:")
 st.write(A_total)
 st.write("b total:")
