@@ -6,10 +6,10 @@ import time
 
 st.set_page_config(page_title="Simulador PRO", layout="wide")
 
-st.title("🚀 Simulador PRO de Transformaciones Geométricas")
+st.title(" Simulador PRO de Transformaciones Geométricas")
 
 # -------- CREAR FIGURA --------
-st.subheader("📐 Crear figura")
+st.subheader("Crear figura")
 
 modo_figura = st.radio("Tipo de figura", ["Predefinida", "Personalizada", "Círculo"])
 
@@ -41,7 +41,7 @@ elif modo_figura == "Personalizada":
         st.stop()
 
 else:
-    st.subheader("⚪ Parámetros del círculo")
+    st.subheader(" Parámetros del círculo")
     cx = float(st.number_input("Centro X", value=0.0))
     cy = float(st.number_input("Centro Y", value=0.0))
     r = float(st.number_input("Radio", value=2.0, min_value=0.1))
@@ -55,7 +55,7 @@ st.write("Puntos de la figura:")
 st.write(P)
 
 # -------- CONTROLES --------
-st.sidebar.header("🎛️ Parámetros")
+st.sidebar.header(" Parámetros")
 
 a = float(st.sidebar.number_input("Traslación X", value=0.0))
 b = float(st.sidebar.number_input("Traslación Y", value=0.0))
@@ -68,7 +68,7 @@ x0 = float(st.sidebar.number_input("x₀", value=0.0))
 y0 = float(st.sidebar.number_input("y₀", value=0.0))
 
 # -------- ZOOM (CORREGIDO) --------
-st.sidebar.subheader("🔍 Vista")
+st.sidebar.subheader(" Vista")
 
 x_centro = float(st.sidebar.number_input("Centro vista X", value=0.0))
 y_centro = float(st.sidebar.number_input("Centro vista Y", value=0.0))
