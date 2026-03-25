@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Entornos virtuales
+venv/
+.env/
+.venv/
+
+# Streamlit
+.streamlit/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Jupyter (por si luego usas notebooks)
+.ipynb_checkpoints/
+
+# Archivos temporales
+*.log
+*.tmp
+
+# Configuraciones locales
+configuracion.json
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
