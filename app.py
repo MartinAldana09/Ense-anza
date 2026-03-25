@@ -65,8 +65,8 @@ def reflexion_y(P):
 
 # -------- APLICAR TRANSFORMACIONES --------
 P_new = P.copy()
-A_total = np.eye(2)
-b_total = np.array([0,0])
+A_total = np.eye(2, dtype=float)
+b_total = np.array([0.0, 0.0])
 
 pasos = []
 
