@@ -8,12 +8,11 @@ st.set_page_config(page_title="Simulador PRO", layout="wide")
 
 st.title("🚀 Simulador PRO de Transformaciones Geométricas")
 
-# -------- CREACIÓN DE FIGURA --------
+# -------- CREAR FIGURA --------
 st.subheader("📐 Crear figura")
 
 modo_figura = st.radio("Tipo de figura", ["Predefinida", "Personalizada", "Círculo"])
 
-# -------- FIGURAS PREDEFINIDAS --------
 def triangulo():
     return np.array([[1,1],[4,1],[2,3]], dtype=float)
 
@@ -23,7 +22,6 @@ def cuadrado():
 def pentagono():
     return np.array([[0,2],[2,4],[4,2],[3,0],[1,0]], dtype=float)
 
-# -------- SELECCIÓN --------
 if modo_figura == "Predefinida":
     figura_nombre = st.selectbox("Figura", ["Triángulo","Cuadrado","Pentágono"])
     P = triangulo() if figura_nombre=="Triángulo" else cuadrado() if figura_nombre=="Cuadrado" else pentagono()
@@ -37,45 +35,44 @@ elif modo_figura == "Personalizada":
             p = p.replace("(", "").replace(")", "")
             x, y = map(float, p.split(","))
             puntos.append([x,y])
-        P = np.array(puntos)
+        P = np.array(puntos, dtype=float)
     except:
-        st.error("Formato incorrecto")
+        st.error("Formato incorrecto. Usa: (x,y), (x,y)")
         st.stop()
 
-else:  # CÍRCULO
+else:
     st.subheader("⚪ Parámetros del círculo")
-    cx = st.number_input("Centro X", value=0.0)
-    cy = st.number_input("Centro Y", value=0.0)
-    r = st.number_input("Radio", value=2.0, min_value=0.1)
+    cx = float(st.number_input("Centro X", value=0.0))
+    cy = float(st.number_input("Centro Y", value=0.0))
+    r = float(st.number_input("Radio", value=2.0, min_value=0.1))
 
     t = np.linspace(0, 2*np.pi, 100)
     x = cx + r*np.cos(t)
     y = cy + r*np.sin(t)
     P = np.column_stack((x,y))
 
-# Mostrar puntos
 st.write("Puntos de la figura:")
 st.write(P)
 
 # -------- CONTROLES --------
 st.sidebar.header("🎛️ Parámetros")
 
-a = st.sidebar.number_input("Traslación X", value=0.0)
-b = st.sidebar.number_input("Traslación Y", value=0.0)
-k = st.sidebar.number_input("Escala k", value=1.0)
-theta = st.sidebar.number_input("Rotación θ", value=0.0)
+a = float(st.sidebar.number_input("Traslación X", value=0.0))
+b = float(st.sidebar.number_input("Traslación Y", value=0.0))
+k = float(st.sidebar.number_input("Escala k", value=1.0))
+theta = float(st.sidebar.number_input("Rotación θ", value=0.0))
 
 # centro rotación
 st.sidebar.subheader("📍 Centro de rotación")
-x0 = st.sidebar.number_input("x₀", value=0.0)
-y0 = st.sidebar.number_input("y₀", value=0.0)
+x0 = float(st.sidebar.number_input("x₀", value=0.0))
+y0 = float(st.sidebar.number_input("y₀", value=0.0))
 
-# -------- ZOOM --------
+# -------- ZOOM (CORREGIDO) --------
 st.sidebar.subheader("🔍 Vista")
 
-x_centro = st.sidebar.number_input("Centro vista X", value=0.0)
-y_centro = st.sidebar.number_input("Centro vista Y", value=0.0)
-escala = st.sidebar.number_input("Escala visual", value=10.0, min_value=1.0)
+x_centro = float(st.sidebar.number_input("Centro vista X", value=0.0))
+y_centro = float(st.sidebar.number_input("Centro vista Y", value=0.0))
+escala = float(st.sidebar.number_input("Escala visual", value=10.0, min_value=1.0))
 
 # -------- TRANSFORMACIONES --------
 st.sidebar.header("Transformaciones")
@@ -88,7 +85,7 @@ usar_refy = st.sidebar.checkbox("Reflexión Y")
 # -------- ANIMACIÓN --------
 st.sidebar.header("🎬 Animación")
 animar = st.sidebar.checkbox("Activar animación")
-velocidad = st.sidebar.slider("Velocidad", 0.1, 5.0, 1.0)
+velocidad = float(st.sidebar.slider("Velocidad", 0.1, 5.0, 1.0))
 
 # -------- FUNCIONES --------
 def traslacion(P,a,b):
@@ -96,7 +93,7 @@ def traslacion(P,a,b):
 
 def escala(P,k):
     A = k*np.eye(2)
-    return P@A.T, A, np.array([0,0])
+    return P@A.T, A, np.array([0.0,0.0])
 
 def rotacion(P,theta,x0,y0):
     t = np.radians(theta)
@@ -108,11 +105,11 @@ def rotacion(P,theta,x0,y0):
 
 def refx(P):
     A = np.array([[1,0],[0,-1]])
-    return P@A.T, A, np.array([0,0])
+    return P@A.T, A, np.array([0.0,0.0])
 
 def refy(P):
     A = np.array([[-1,0],[0,1]])
-    return P@A.T, A, np.array([0,0])
+    return P@A.T, A, np.array([0.0,0.0])
 
 # -------- APLICAR --------
 def aplicar(P):
@@ -166,9 +163,15 @@ fig, ax = plt.subplots(figsize=(6,6))
 ax.plot(P[:,0], P[:,1], 'k--', label="Original")
 ax.plot(P_new[:,0], P_new[:,1], 'b-', label="Transformada")
 
-ax.set_xlim(x_centro - escala, x_centro + escala)
-ax.set_ylim(y_centro - escala, y_centro + escala)
+# zoom seguro
+try:
+    ax.set_xlim(x_centro - escala, x_centro + escala)
+    ax.set_ylim(y_centro - escala, y_centro + escala)
+except:
+    ax.set_xlim(-10,10)
+    ax.set_ylim(-10,10)
 
+# ejes tipo GeoGebra
 ax.spines['left'].set_position('zero')
 ax.spines['bottom'].set_position('zero')
 ax.spines['right'].set_color('none')
@@ -204,7 +207,7 @@ st.latex(r"T(x)=Ax+b")
 config = {"a":a,"b":b,"k":k,"theta":theta}
 st.download_button("Guardar configuración", json.dumps(config), "config.json")
 
-# animación loop
+# -------- LOOP --------
 if animar:
     time.sleep(0.05)
     st.rerun()
