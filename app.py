@@ -160,8 +160,11 @@ P_new, A_total, b_total, pasos = aplicar(P)
 # -------- GRAFICA --------
 fig, ax = plt.subplots(figsize=(6,6))
 
-ax.plot(P[:,0], P[:,1], 'k--', label="Original")
-ax.plot(P_new[:,0], P_new[:,1], 'b-', label="Transformada")
+P_cerrado = np.vstack([P, P[0]])
+P_new_cerrado = np.vstack([P_new, P_new[0]])
+
+ax.plot(P_cerrado[:,0], P_cerrado[:,1], 'k--', label="Original")
+ax.plot(P_new_cerrado[:,0], P_new_cerrado[:,1], 'b-', label="Transformada")
 
 # zoom seguro
 try:
