@@ -22,10 +22,10 @@ En esta sección aprenderá:
 
 Cada tema incluye:
 - explicación intuitiva
-- ejemplos
+- ejemplos gráficos
 - interpretación geométrica
-- problemas
-- visualización gráfica
+- ejercicios interactivos
+- validación automática
 """)
 
 st.divider()
@@ -56,6 +56,9 @@ def graficar(P, P2, titulo1, titulo2):
         linewidth=2,
         label=titulo2
     )
+
+    ax.scatter(P[:,0], P[:,1], color='black')
+    ax.scatter(P2[:,0], P2[:,1], color='blue')
 
     ax.spines['left'].set_position('zero')
     ax.spines['bottom'].set_position('zero')
@@ -94,25 +97,26 @@ st.write("""
 Una traslación mueve todos los puntos
 la misma distancia y en la misma dirección.
 
-La figura NO cambia:
-- tamaño
-- forma
-- orientación
+La figura:
 
-Solo cambia de posición.
+- no gira
+- no cambia de tamaño
+- no cambia de forma
+
+solo cambia de posición.
 """)
 
 st.subheader("Ejemplo intuitivo")
 
 st.write("""
-Imagine mover una mesa en línea recta dentro de un salón.
-La mesa no gira ni cambia de tamaño.
-Solo cambia de lugar.
+Imagine mover una silla dentro del salón.
+La silla sigue igual,
+solo cambia de lugar.
 """)
 
 st.subheader("Fórmula")
 
-st.latex(r"(x,y)\rightarrow(x+a,y+b)")
+:contentReference[oaicite:0]{index=0}
 
 a = 3
 b = 2
@@ -129,34 +133,57 @@ graficar(
 st.subheader("Interpretación")
 
 st.write(f"""
-Cada punto aumentó:
+Cada punto se desplazó:
+
 - {a} unidades en x
 - {b} unidades en y
 """)
 
-st.subheader("Problema")
+st.subheader("Ejercicio interactivo")
 
 st.write("""
-Un dron se encuentra en:
+Un dron está en el punto:
+
 (2,3)
 
 Luego se mueve:
+
 - 5 unidades a la derecha
 - 2 unidades hacia abajo
 
-¿En qué punto termina?
+¿Dónde termina?
 """)
 
-respuesta1 = st.text_input(
-    "Respuesta problema traslación"
+respuesta1 = st.radio(
+    "Seleccione la respuesta correcta",
+    [
+        "(7,1)",
+        "(5,5)",
+        "(7,5)",
+        "(2,1)"
+    ],
+    key="tras"
 )
 
-if respuesta1:
+if st.button("Verificar traslación"):
 
-    if "(7,1)" in respuesta1.replace(" ", ""):
-        st.success("Correcto")
+    if respuesta1 == "(7,1)":
+        st.success("""
+Perfecto.
+
+El movimiento fue:
+
+x: 2 + 5 = 7
+y: 3 - 2 = 1
+""")
     else:
-        st.warning("Revise nuevamente el movimiento.")
+        st.error("""
+Respuesta incorrecta.
+
+Recuerde:
+- derecha suma en x
+- abajo resta en y
+""")
 
 st.divider()
 
@@ -167,21 +194,23 @@ st.divider()
 st.header("Rotación")
 
 st.write("""
-Una rotación gira una figura alrededor de un punto.
+Una rotación gira una figura
+alrededor de un punto fijo.
 """)
 
 st.subheader("Ejemplo intuitivo")
 
 st.write("""
-Las manecillas de un reloj realizan rotaciones.
-Un ventilador también gira alrededor de un centro.
+Las aspas de un ventilador
+realizan rotaciones.
+
+Las manecillas de un reloj
+también giran alrededor de un centro.
 """)
 
 st.subheader("Fórmula")
 
-st.latex(
-r"(x,y)\rightarrow(x\cos\theta-y\sin\theta,\ x\sin\theta+y\cos\theta)"
-)
+:contentReference[oaicite:1]{index=1}
 
 theta = 90
 
@@ -204,32 +233,56 @@ graficar(
 st.subheader("Interpretación")
 
 st.write("""
-La figura giró 90 grados antihorario
+La figura giró 90 grados
+en sentido antihorario
 alrededor del origen.
 """)
 
-st.subheader("Problema")
+st.subheader("Ejercicio interactivo")
 
 st.write("""
 El punto:
+
 (2,0)
 
-se rota 90 grados antihorario
+se rota 90° antihorario
 alrededor del origen.
 
-¿En qué punto queda?
+¿Dónde queda?
 """)
 
-respuesta2 = st.text_input(
-    "Respuesta problema rotación"
+respuesta2 = st.radio(
+    "Seleccione la respuesta correcta ",
+    [
+        "(0,2)",
+        "(2,2)",
+        "(0,-2)",
+        "(-2,0)"
+    ],
+    key="rot"
 )
 
-if respuesta2:
+if st.button("Verificar rotación"):
 
-    if "(0,2)" in respuesta2.replace(" ", ""):
-        st.success("Correcto")
+    if respuesta2 == "(0,2)":
+        st.success("""
+Excelente.
+
+Una rotación de 90° antihorario:
+
+(x,y) → (-y,x)
+
+Entonces:
+
+(2,0) → (0,2)
+""")
     else:
-        st.warning("Recuerde cómo actúa la rotación de 90°.")
+        st.error("""
+Respuesta incorrecta.
+
+Recuerde cómo gira el plano
+en sentido antihorario.
+""")
 
 st.divider()
 
@@ -240,19 +293,21 @@ st.divider()
 st.header("Reflexión")
 
 st.write("""
-Una reflexión crea una imagen especular.
+Una reflexión produce
+una imagen especular.
 """)
 
 st.subheader("Ejemplo intuitivo")
 
 st.write("""
-Cuando una persona se mira en un espejo,
+Cuando una persona se mira
+en un espejo,
 aparece una reflexión.
 """)
 
 st.subheader("Reflexión respecto al eje X")
 
-st.latex(r"(x,y)\rightarrow(x,-y)")
+:contentReference[oaicite:2]{index=2}
 
 A_refx = np.array([
     [1,0],
@@ -271,29 +326,52 @@ graficar(
 st.subheader("Interpretación")
 
 st.write("""
-Las coordenadas x permanecen iguales,
-pero las coordenadas y cambian de signo.
+Las coordenadas x
+permanecen iguales.
+
+Las coordenadas y
+cambian de signo.
 """)
 
-st.subheader("Problema")
+st.subheader("Ejercicio interactivo")
 
 st.write("""
 Refleje el punto:
+
 (4,-3)
 
 respecto al eje X.
 """)
 
-respuesta3 = st.text_input(
-    "Respuesta problema reflexión"
+respuesta3 = st.radio(
+    "Seleccione la respuesta correcta  ",
+    [
+        "(4,3)",
+        "(-4,-3)",
+        "(3,4)",
+        "(-4,3)"
+    ],
+    key="ref"
 )
 
-if respuesta3:
+if st.button("Verificar reflexión"):
 
-    if "(4,3)" in respuesta3.replace(" ", ""):
-        st.success("Correcto")
+    if respuesta3 == "(4,3)":
+        st.success("""
+Muy bien.
+
+En una reflexión respecto al eje X:
+
+- x permanece igual
+- y cambia de signo
+""")
     else:
-        st.warning("Observe qué coordenada cambia de signo.")
+        st.error("""
+Respuesta incorrecta.
+
+Observe qué coordenada
+debe cambiar de signo.
+""")
 
 st.divider()
 
@@ -304,20 +382,22 @@ st.divider()
 st.header("Homotecia")
 
 st.write("""
-Una homotecia cambia el tamaño de una figura.
+Una homotecia cambia
+el tamaño de una figura.
 """)
 
 st.subheader("Ejemplo intuitivo")
 
 st.write("""
-Cuando amplía una imagen en el celular,
-la figura mantiene la forma,
+Cuando amplía una imagen
+en el celular,
+la figura conserva la forma,
 pero cambia de tamaño.
 """)
 
 st.subheader("Fórmula")
 
-st.latex(r"(x,y)\rightarrow(kx,ky)")
+:contentReference[oaicite:3]{index=3}
 
 k = 2
 
@@ -333,31 +413,57 @@ graficar(
 st.subheader("Interpretación")
 
 st.write("""
-La figura aumentó su tamaño al doble.
+La figura aumentó
+su tamaño al doble.
 """)
 
-st.subheader("Problema")
+st.subheader("Ejercicio interactivo")
 
 st.write("""
-Aplique una homotecia de razón:
+Aplique una homotecia
+de razón:
+
 k = 3
 
 al punto:
+
 (2,1)
 
 ¿Cuál es el resultado?
 """)
 
-respuesta4 = st.text_input(
-    "Respuesta problema homotecia"
+respuesta4 = st.radio(
+    "Seleccione la respuesta correcta   ",
+    [
+        "(6,3)",
+        "(5,3)",
+        "(2,3)",
+        "(3,1)"
+    ],
+    key="hom"
 )
 
-if respuesta4:
+if st.button("Verificar homotecia"):
 
-    if "(6,3)" in respuesta4.replace(" ", ""):
-        st.success("Correcto")
+    if respuesta4 == "(6,3)":
+        st.success("""
+Correcto.
+
+En una homotecia:
+
+(x,y) → (kx,ky)
+
+Entonces:
+
+(2,1) → (6,3)
+""")
     else:
-        st.warning("Multiplique ambas coordenadas por k.")
+        st.error("""
+Respuesta incorrecta.
+
+Multiplique ambas coordenadas
+por k.
+""")
 
 st.divider()
 
@@ -396,6 +502,8 @@ tabla = {
 
 st.table(tabla)
 
+st.divider()
+
 # =========================================================
 # RETO FINAL
 # =========================================================
@@ -409,36 +517,55 @@ A=(0,0)
 B=(2,0)
 C=(1,2)
 
-Construya una secuencia de dos transformaciones
-que:
+¿Qué ocurre si:
 
-1. refleje la figura
-2. luego la traslade
-
-y explique:
-- qué cambia
-- qué permanece igual
-- por qué el orden importa
+1. primero refleja la figura
+2. luego la traslada?
 """)
 
-reto = st.text_area(
-    "Escriba su explicación",
-    height=200
+respuesta_final = st.radio(
+    "Seleccione la afirmación correcta",
+    [
+        "El orden de las transformaciones no importa nunca",
+        "La figura cambia completamente de forma",
+        "El orden puede cambiar el resultado final",
+        "La traslación cambia el tamaño de la figura"
+    ]
 )
 
-if st.button("Enviar respuesta"):
+if st.button("Verificar reto final"):
 
-    if len(reto) > 40:
-
+    if respuesta_final == "El orden puede cambiar el resultado final":
         st.success("""
-Respuesta enviada correctamente.
-La explicación tiene suficiente desarrollo.
-""")
+Excelente análisis.
 
+El orden de las transformaciones
+sí puede modificar
+la posición y orientación final.
+""")
     else:
-
-        st.warning("""
-La respuesta parece demasiado corta.
-Intente justificar con más detalle.
+        st.error("""
+Revise nuevamente cómo actúan
+las composiciones de transformaciones.
 """)
-      
+
+st.divider()
+
+st.header("Conclusión")
+
+st.write("""
+Las transformaciones geométricas
+son fundamentales en:
+
+- matemáticas
+- física
+- diseño gráfico
+- ingeniería
+- animación
+- arquitectura
+- videojuegos
+
+Comprenderlas permite interpretar
+cómo cambian los objetos
+en el plano y en el espacio.
+""")
