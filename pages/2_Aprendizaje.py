@@ -116,7 +116,7 @@ solo cambia de lugar.
 
 st.subheader("Fórmula")
 
-:contentReference[oaicite:0]{index=0}
+st.latex(r"(x,y)\rightarrow(x+a,y+b)")
 
 a = 3
 b = 2
@@ -210,7 +210,9 @@ también giran alrededor de un centro.
 
 st.subheader("Fórmula")
 
-:contentReference[oaicite:1]{index=1}
+st.latex(
+    r"(x,y)\rightarrow(x\cos\theta-y\sin\theta,\ x\sin\theta+y\cos\theta)"
+)
 
 theta = 90
 
@@ -252,7 +254,7 @@ alrededor del origen.
 """)
 
 respuesta2 = st.radio(
-    "Seleccione la respuesta correcta ",
+    "Seleccione la respuesta correcta",
     [
         "(0,2)",
         "(2,2)",
@@ -307,7 +309,7 @@ aparece una reflexión.
 
 st.subheader("Reflexión respecto al eje X")
 
-:contentReference[oaicite:2]{index=2}
+st.latex(r"(x,y)\rightarrow(x,-y)")
 
 A_refx = np.array([
     [1,0],
@@ -344,7 +346,7 @@ respecto al eje X.
 """)
 
 respuesta3 = st.radio(
-    "Seleccione la respuesta correcta  ",
+    "Seleccione la respuesta correcta",
     [
         "(4,3)",
         "(-4,-3)",
@@ -397,7 +399,7 @@ pero cambia de tamaño.
 
 st.subheader("Fórmula")
 
-:contentReference[oaicite:3]{index=3}
+st.latex(r"(x,y)\rightarrow(kx,ky)")
 
 k = 2
 
@@ -433,7 +435,7 @@ al punto:
 """)
 
 respuesta4 = st.radio(
-    "Seleccione la respuesta correcta   ",
+    "Seleccione la respuesta correcta",
     [
         "(6,3)",
         "(5,3)",
@@ -559,13 +561,13 @@ son fundamentales en:
 
 - matemáticas
 - física
-- diseño gráfico
 - ingeniería
-- animación
 - arquitectura
+- diseño gráfico
 - videojuegos
+- animación
 
-Comprenderlas permite interpretar
-cómo cambian los objetos
-en el plano y en el espacio.
+Comprenderlas permite analizar
+cómo cambian las figuras
+en el plano cartesiano.
 """)
