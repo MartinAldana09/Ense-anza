@@ -148,6 +148,12 @@ def aplicar(P):
     return P_new, A_total, b_total, pasos
 
 
+return P_new, A_total, b_total, pasos
+
+
+# -------- APLICAR TRANSFORMACIONES --------
+P_new, A_total, b_total, pasos = aplicar(P)
+
 # -------- GRAFICA --------
 fig, ax = plt.subplots(figsize=(6,6))
 
