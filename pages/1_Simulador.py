@@ -341,6 +341,26 @@ mostrar_nombres = st.sidebar.checkbox(
 )
 
 # =========================================================
+# TAMAÑO Y ZOOM DE LA GRÁFICA
+# =========================================================
+
+st.sidebar.header("Vista de la gráfica")
+
+tamano_grafica = st.sidebar.number_input(
+    "Tamaño gráfica",
+    min_value=5,
+    max_value=20,
+    value=9
+)
+
+zoom = st.sidebar.number_input(
+    "Zoom",
+    min_value=5,
+    max_value=100,
+    value=20
+)
+
+# =========================================================
 # FUNCIONES
 # =========================================================
 
@@ -430,7 +450,9 @@ col1, col2 = st.columns([2,1])
 
 with col1:
 
-    fig, ax = plt.subplots(figsize=(9,9))
+    fig, ax = plt.subplots(
+        figsize=(tamano_grafica, tamano_grafica)
+    )
 
     # -----------------------------------------------------
 
@@ -530,8 +552,8 @@ with col1:
 
     ax.grid(True, linestyle='--', alpha=0.5)
 
-    ax.set_xlim(-20,20)
-    ax.set_ylim(-20,20)
+    ax.set_xlim(-zoom, zoom)
+    ax.set_ylim(-zoom, zoom)
 
     ax.set_aspect('equal')
 
