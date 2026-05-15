@@ -63,6 +63,7 @@ st.markdown("""
 Con este simulador puede:
 
 ✅ Graficar múltiples figuras  
+✅ Crear figuras personalizadas  
 ✅ Aplicar transformaciones geométricas  
 ✅ Superponer figuras  
 ✅ Visualizar coordenadas  
@@ -110,32 +111,86 @@ def pentagono():
     ], dtype=float)
 
 # =========================================================
-# CREAR FIGURA
+# FUNCIÓN FIGURA PERSONALIZADA
+# =========================================================
+
+def leer_puntos(texto):
+
+    puntos = []
+
+    pares = texto.replace(" ", "").split("),")
+
+    for p in pares:
+
+        p = p.replace("(", "")
+        p = p.replace(")", "")
+
+        x, y = map(float, p.split(","))
+
+        puntos.append([x, y])
+
+    return np.array(puntos, dtype=float)
+
+# =========================================================
+# FIGURA PRINCIPAL
 # =========================================================
 
 st.sidebar.header("Figura principal")
 
-tipo1 = st.sidebar.selectbox(
-    "Seleccione figura",
+modo1 = st.sidebar.radio(
+    "Modo figura principal",
     [
-        "Triángulo",
-        "Cuadrado",
-        "Rectángulo",
-        "Pentágono"
+        "Predefinida",
+        "Personalizada"
     ]
 )
 
-if tipo1 == "Triángulo":
-    P = triangulo()
+if modo1 == "Predefinida":
 
-elif tipo1 == "Cuadrado":
-    P = cuadrado()
+    tipo1 = st.sidebar.selectbox(
+        "Seleccione figura",
+        [
+            "Triángulo",
+            "Cuadrado",
+            "Rectángulo",
+            "Pentágono"
+        ]
+    )
 
-elif tipo1 == "Rectángulo":
-    P = rectangulo()
+    if tipo1 == "Triángulo":
+        P = triangulo()
+
+    elif tipo1 == "Cuadrado":
+        P = cuadrado()
+
+    elif tipo1 == "Rectángulo":
+        P = rectangulo()
+
+    else:
+        P = pentagono()
 
 else:
-    P = pentagono()
+
+    texto1 = st.sidebar.text_area(
+        "Ingrese vértices figura principal",
+        "(1,1), (4,1), (2,4)"
+    )
+
+    try:
+
+        P = leer_puntos(texto1)
+
+    except:
+
+        st.error("""
+Formato incorrecto.
+
+Use este formato:
+
+(1,1), (4,1), (2,4)
+""")
+
+        st.stop()
 
 # =========================================================
 # SEGUNDA FIGURA
@@ -151,27 +206,60 @@ if usar_segunda:
 
     st.sidebar.subheader("Segunda figura")
 
-    tipo2 = st.sidebar.selectbox(
-        "Seleccione segunda figura",
+    modo2 = st.sidebar.radio(
+        "Modo segunda figura",
         [
-            "Triángulo",
-            "Cuadrado",
-            "Rectángulo",
-            "Pentágono"
+            "Predefinida",
+            "Personalizada"
         ]
     )
 
-    if tipo2 == "Triángulo":
-        P2 = triangulo() + np.array([6,0])
+    if modo2 == "Predefinida":
 
-    elif tipo2 == "Cuadrado":
-        P2 = cuadrado() + np.array([6,0])
+        tipo2 = st.sidebar.selectbox(
+            "Seleccione segunda figura",
+            [
+                "Triángulo",
+                "Cuadrado",
+                "Rectángulo",
+                "Pentágono"
+            ]
+        )
 
-    elif tipo2 == "Rectángulo":
-        P2 = rectangulo() + np.array([6,0])
+        if tipo2 == "Triángulo":
+            P2 = triangulo() + np.array([6,0])
+
+        elif tipo2 == "Cuadrado":
+            P2 = cuadrado() + np.array([6,0])
+
+        elif tipo2 == "Rectángulo":
+            P2 = rectangulo() + np.array([6,0])
+
+        else:
+            P2 = pentagono() + np.array([6,0])
 
     else:
-        P2 = pentagono() + np.array([6,0])
+
+        texto2 = st.sidebar.text_area(
+            "Ingrese vértices segunda figura",
+            "(6,1), (9,1), (7,4)"
+        )
+
+        try:
+
+            P2 = leer_puntos(texto2)
+
+        except:
+
+            st.error("""
+Formato incorrecto.
+
+Use este formato:
+
+(1,1), (4,1), (2,4)
+""")
+
+            st.stop()
 
 # =========================================================
 # PARÁMETROS
@@ -179,32 +267,24 @@ if usar_segunda:
 
 st.sidebar.header("Transformaciones")
 
-a = st.sidebar.slider(
+a = st.sidebar.number_input(
     "Traslación X",
-    -10.0,
-    10.0,
-    0.0
+    value=0.0
 )
 
-b = st.sidebar.slider(
+b = st.sidebar.number_input(
     "Traslación Y",
-    -10.0,
-    10.0,
-    0.0
+    value=0.0
 )
 
-theta = st.sidebar.slider(
-    "Rotación θ",
-    -360,
-    360,
-    0
+theta = st.sidebar.number_input(
+    "Rotación θ (grados)",
+    value=0.0
 )
 
-k = st.sidebar.slider(
+k = st.sidebar.number_input(
     "Escala k",
-    -5.0,
-    5.0,
-    1.0
+    value=1.0
 )
 
 # =========================================================
@@ -305,7 +385,7 @@ def reflejar_y(P):
     return P @ A.T
 
 # =========================================================
-# APLICAR TRANSFORMACIONES
+# TRANSFORMAR
 # =========================================================
 
 def transformar(P):
@@ -313,20 +393,10 @@ def transformar(P):
     P_new = P.copy()
 
     if usar_esc:
-        P_new = escalar(
-            P_new,
-            k,
-            x0,
-            y0
-        )
+        P_new = escalar(P_new, k, x0, y0)
 
     if usar_rot:
-        P_new = rotar(
-            P_new,
-            theta,
-            x0,
-            y0
-        )
+        P_new = rotar(P_new, theta, x0, y0)
 
     if usar_refx:
         P_new = reflejar_x(P_new)
@@ -335,11 +405,7 @@ def transformar(P):
         P_new = reflejar_y(P_new)
 
     if usar_tras:
-        P_new = trasladar(
-            P_new,
-            a,
-            b
-        )
+        P_new = trasladar(P_new, a, b)
 
     return P_new
 
@@ -367,8 +433,6 @@ with col1:
     fig, ax = plt.subplots(figsize=(9,9))
 
     # -----------------------------------------------------
-    # FIGURA ORIGINAL
-    # -----------------------------------------------------
 
     P_c = np.vstack([P, P[0]])
 
@@ -381,8 +445,6 @@ with col1:
     )
 
     # -----------------------------------------------------
-    # FIGURA TRANSFORMADA
-    # -----------------------------------------------------
 
     Pn_c = np.vstack([P_new, P_new[0]])
 
@@ -390,11 +452,9 @@ with col1:
         Pn_c[:,0],
         Pn_c[:,1],
         linewidth=3,
-        label="Figura transformada"
+        label="Transformada"
     )
 
-    # -----------------------------------------------------
-    # SEGUNDA FIGURA
     # -----------------------------------------------------
 
     if P2 is not None:
@@ -419,25 +479,13 @@ with col1:
         )
 
     # -----------------------------------------------------
-    # VÉRTICES
-    # -----------------------------------------------------
 
     if mostrar_vertices:
 
-        ax.scatter(
-            P[:,0],
-            P[:,1],
-            s=80
-        )
+        ax.scatter(P[:,0], P[:,1], s=80)
 
-        ax.scatter(
-            P_new[:,0],
-            P_new[:,1],
-            s=80
-        )
+        ax.scatter(P_new[:,0], P_new[:,1], s=80)
 
-    # -----------------------------------------------------
-    # NOMBRES
     # -----------------------------------------------------
 
     if mostrar_nombres:
@@ -463,8 +511,6 @@ with col1:
             )
 
     # -----------------------------------------------------
-    # CENTRO
-    # -----------------------------------------------------
 
     ax.scatter(
         [x0],
@@ -475,8 +521,6 @@ with col1:
     )
 
     # -----------------------------------------------------
-    # ESTILO
-    # -----------------------------------------------------
 
     ax.spines['left'].set_position('zero')
     ax.spines['bottom'].set_position('zero')
@@ -486,8 +530,8 @@ with col1:
 
     ax.grid(True, linestyle='--', alpha=0.5)
 
-    ax.set_xlim(-15,15)
-    ax.set_ylim(-15,15)
+    ax.set_xlim(-20,20)
+    ax.set_ylim(-20,20)
 
     ax.set_aspect('equal')
 
@@ -529,37 +573,17 @@ with col2:
     st.write(np.round(P_new,2))
 
 # =========================================================
-# SUPERPOSICIÓN
+# MATRICES
 # =========================================================
 
 st.divider()
 
-st.subheader("Análisis de superposición")
-
-st.write("""
-Observe cómo las figuras pueden:
-
-- coincidir parcialmente
-- reflejarse
-- rotarse
-- trasladarse
-- cambiar de tamaño
-
-igual que en GeoGebra.
-""")
-
-# =========================================================
-# MATRIZ
-# =========================================================
-
-st.divider()
-
-st.subheader("Transformación matricial")
+st.subheader("Representación matricial")
 
 st.latex(r"T(x)=Ax+b")
 
 st.write("""
-Las transformaciones geométricas pueden representarse
+Las transformaciones geométricas pueden modelarse
 mediante matrices y vectores.
 """)
 
