@@ -6,35 +6,116 @@ st.set_page_config(
 )
 
 # =========================================================
+# ESTILOS
+# =========================================================
+
+st.markdown("""
+<style>
+
+.main {
+    background-color: #f5f7fb;
+}
+
+h1 {
+    color: #0b3d91;
+    text-align: center;
+    font-size: 55px;
+}
+
+h2 {
+    color: #1248a4;
+}
+
+h3 {
+    color: #1f5fbf;
+}
+
+.bloque {
+    background-color: white;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 2px 2px 15px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.azul {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    padding: 25px;
+    border-radius: 20px;
+}
+
+.verde {
+    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+    padding: 25px;
+    border-radius: 20px;
+}
+
+.rojo {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    padding: 25px;
+    border-radius: 20px;
+}
+
+.morado {
+    background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+    padding: 25px;
+    border-radius: 20px;
+}
+
+.titulo-central {
+    text-align: center;
+    font-size: 24px;
+    color: #1e3a8a;
+    font-weight: bold;
+}
+
+.texto-central {
+    text-align: center;
+    font-size: 18px;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+# =========================================================
 # PORTADA
 # =========================================================
 
 st.markdown("""
-# Transformaciones Geométricas Interactivas
-""")
+<h1>
+Transformaciones Geométricas Interactivas
+</h1>
+""", unsafe_allow_html=True)
 
 st.markdown("""
-### Exploración visual del plano cartesiano
-""")
+<div class="azul">
 
-st.write("""
-Esta plataforma permite aprender, experimentar y analizar
-transformaciones geométricas de manera visual e interactiva.
+<div class="titulo-central">
+Exploración visual del plano cartesiano
+</div>
 
-Aquí podrá:
+<br>
 
-- visualizar figuras en el plano cartesiano
-- aplicar transformaciones en tiempo real
-- explorar matrices de transformación
-- analizar composiciones geométricas
-- resolver ejercicios interactivos
-- desarrollar argumentación matemática
-""")
+<div class="texto-central">
 
-st.divider()
+Aprenda geometría de manera interactiva mediante:
+
+• simulaciones dinámicas  
+• visualización gráfica  
+• transformaciones en tiempo real  
+• interpretación geométrica  
+• ejercicios interactivos  
+• análisis matemático  
+
+</div>
+
+</div>
+""", unsafe_allow_html=True)
+
+st.write("")
 
 # =========================================================
-# BLOQUES VISUALES
+# TARJETAS
 # =========================================================
 
 col1, col2, col3, col4 = st.columns(4)
@@ -42,128 +123,222 @@ col1, col2, col3, col4 = st.columns(4)
 with col1:
 
     st.markdown("""
-    ## Traslación
-    
-    Desplaza figuras
+    <div class="verde">
+
+    <h3 style="text-align:center;">
+    Traslación
+    </h3>
+
+    <p style="text-align:center;">
+
+    Desplaza figuras  
     sin cambiar:
-    
-    - tamaño
-    - forma
-    - orientación
-    """)
+
+    • forma  
+    • tamaño  
+    • orientación
+
+    </p>
+
+    </div>
+    """, unsafe_allow_html=True)
 
 with col2:
 
     st.markdown("""
-    ## Rotación
-    
-    Gira figuras
+    <div class="rojo">
+
+    <h3 style="text-align:center;">
+    Rotación
+    </h3>
+
+    <p style="text-align:center;">
+
+    Gira figuras  
     alrededor de:
-    
-    - un punto
-    - un centro
-    - un ángulo
-    """)
+
+    • un punto  
+    • un centro  
+    • un ángulo
+
+    </p>
+
+    </div>
+    """, unsafe_allow_html=True)
 
 with col3:
 
     st.markdown("""
-    ## Reflexión
-    
-    Produce imágenes
+    <div class="morado">
+
+    <h3 style="text-align:center;">
+    Reflexión
+    </h3>
+
+    <p style="text-align:center;">
+
+    Construye imágenes  
     especulares respecto:
-    
-    - eje X
-    - eje Y
-    - rectas
-    """)
+
+    • eje X  
+    • eje Y  
+    • rectas
+
+    </p>
+
+    </div>
+    """, unsafe_allow_html=True)
 
 with col4:
 
     st.markdown("""
-    ## Homotecia
-    
-    Modifica:
-    
-    - tamaño
-    - escala
-    - proporciones
-    """)
+    <div class="azul">
 
-st.divider()
+    <h3 style="text-align:center;">
+    Homotecia
+    </h3>
+
+    <p style="text-align:center;">
+
+    Modifica:
+
+    • tamaño  
+    • escala  
+    • proporciones
+
+    </p>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+st.write("")
 
 # =========================================================
 # SECCIONES
 # =========================================================
 
-st.header("Módulos de la Plataforma")
+st.markdown("""
+<div class="bloque">
+
+<h2 style="text-align:center;">
+Módulos de la Plataforma
+</h2>
+
+</div>
+""", unsafe_allow_html=True)
 
 col5, col6, col7 = st.columns(3)
 
 with col5:
 
-    st.subheader("Simulador")
+    st.markdown("""
+    <div class="verde">
 
-    st.write("""
-    Experimente libremente
-    con transformaciones.
+    <h3 style="text-align:center;">
+    Simulador
+    </h3>
 
-    Puede:
+    <p>
 
-    - crear figuras
-    - moverlas
-    - rotarlas
-    - reflejarlas
-    - escalarlas
-    """)
+    Experimente libremente:
+
+    • crear figuras  
+    • trasladar  
+    • rotar  
+    • reflejar  
+    • escalar  
+    • superponer figuras
+
+    </p>
+
+    </div>
+    """, unsafe_allow_html=True)
 
 with col6:
 
-    st.subheader("Aprendizaje")
+    st.markdown("""
+    <div class="azul">
 
-    st.write("""
-    Estudie conceptos mediante:
+    <h3 style="text-align:center;">
+    Aprendizaje
+    </h3>
 
-    - explicaciones intuitivas
-    - gráficos dinámicos
-    - ejercicios interactivos
-    - interpretación geométrica
-    """)
+    <p>
+
+    Estudie mediante:
+
+    • explicaciones intuitivas  
+    • ejemplos visuales  
+    • ejercicios interactivos  
+    • interpretación geométrica
+
+    </p>
+
+    </div>
+    """, unsafe_allow_html=True)
 
 with col7:
 
-    st.subheader("Evaluación")
+    st.markdown("""
+    <div class="rojo">
 
-    st.write("""
+    <h3 style="text-align:center;">
+    Evaluación
+    </h3>
+
+    <p>
+
     Resuelva problemas usando:
 
-    - el simulador
-    - superposición de figuras
-    - análisis geométrico
-    - argumentación matemática
-    """)
+    • el simulador  
+    • análisis geométrico  
+    • argumentación matemática  
+    • validación visual
 
-st.divider()
+    </p>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+st.write("")
 
 # =========================================================
 # IMPORTANCIA
 # =========================================================
 
-st.header("¿Por qué estudiar transformaciones geométricas?")
+st.markdown("""
+<div class="bloque">
 
-st.write("""
+<h2 style="text-align:center;">
+Aplicaciones de las Transformaciones
+</h2>
+
+<p style="font-size:18px;">
+
 Las transformaciones geométricas son fundamentales en:
 
-- matemáticas
-- física
-- arquitectura
-- ingeniería
-- videojuegos
-- animación
-- diseño gráfico
-- modelación matemática
-""")
+• matemáticas  
+• física  
+• ingeniería  
+• arquitectura  
+• videojuegos  
+• diseño gráfico  
+• animación  
+• modelación matemática  
 
-st.info("""
-Utilice el menú lateral para navegar entre las diferentes secciones.
+</p>
+
+</div>
+""", unsafe_allow_html=True)
+
+# =========================================================
+# MENSAJE FINAL
+# =========================================================
+
+st.success("""
+Utilice el menú lateral para navegar entre:
+
+• Simulador
+• Aprendizaje
+• Evaluación
 """)
