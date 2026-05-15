@@ -8,22 +8,51 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("Simulador PRO de Transformaciones Geométricas")
-
 # =========================================================
-# CREAR FIGURA
+# ESTILOS
 # =========================================================
 
-st.subheader("Crear figura")
+st.markdown("""
+<style>
 
-modo_figura = st.radio(
-    "Tipo de figura",
-    ["Predefinida", "Personalizada", "Círculo"]
+.main-title{
+    font-size:55px;
+    font-weight:bold;
+    text-align:center;
+    color:#0D47A1;
+}
+
+.subtitle{
+    font-size:25px;
+    text-align:center;
+    color:#1565C0;
+}
+
+.box{
+    background-color:#E3F2FD;
+    padding:20px;
+    border-radius:20px;
+    border:2px solid #64B5F6;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown(
+    '<p class="main-title">Simulador PRO</p>',
+    unsafe_allow_html=True
 )
 
-# ---------------------------------------------------------
-# FIGURAS PREDEFINIDAS
-# ---------------------------------------------------------
+st.markdown(
+    '<p class="subtitle">Transformaciones Geométricas Interactivas</p>',
+    unsafe_allow_html=True
+)
+
+st.divider()
+
+# =========================================================
+# FUNCIONES DE FIGURAS
+# =========================================================
 
 def triangulo():
     return np.array([
@@ -49,205 +78,172 @@ def pentagono():
         [1,0]
     ], dtype=float)
 
-# ---------------------------------------------------------
-# SELECCIÓN FIGURA
-# ---------------------------------------------------------
+def hexagono():
+    return np.array([
+        [1,0],
+        [3,0],
+        [4,2],
+        [3,4],
+        [1,4],
+        [0,2]
+    ], dtype=float)
 
-if modo_figura == "Predefinida":
+# =========================================================
+# CREAR FIGURA 1
+# =========================================================
 
-    figura_nombre = st.selectbox(
-        "Figura",
-        ["Triángulo", "Cuadrado", "Pentágono"]
-    )
+st.header("Figura principal")
 
-    if figura_nombre == "Triángulo":
-        P = triangulo()
+tipo1 = st.selectbox(
+    "Seleccione figura",
+    [
+        "Triángulo",
+        "Cuadrado",
+        "Pentágono",
+        "Hexágono"
+    ]
+)
 
-    elif figura_nombre == "Cuadrado":
-        P = cuadrado()
+if tipo1 == "Triángulo":
+    P = triangulo()
 
-    else:
-        P = pentagono()
+elif tipo1 == "Cuadrado":
+    P = cuadrado()
 
-# ---------------------------------------------------------
-# FIGURA PERSONALIZADA
-# ---------------------------------------------------------
-
-elif modo_figura == "Personalizada":
-
-    texto = st.text_area(
-        "Ingrese puntos (x,y)",
-        "(1,1), (4,1), (2,3)"
-    )
-
-    try:
-
-        puntos = []
-
-        pares = texto.replace(" ", "").split("),")
-
-        for p in pares:
-
-            p = p.replace("(", "")
-            p = p.replace(")", "")
-
-            x, y = map(float, p.split(","))
-
-            puntos.append([x, y])
-
-        P = np.array(puntos, dtype=float)
-
-    except:
-
-        st.error("Formato incorrecto. Use: (x,y), (x,y)")
-        st.stop()
-
-# ---------------------------------------------------------
-# CÍRCULO
-# ---------------------------------------------------------
+elif tipo1 == "Pentágono":
+    P = pentagono()
 
 else:
-
-    st.subheader("Parámetros del círculo")
-
-    cx = float(
-        st.number_input("Centro X", value=0.0)
-    )
-
-    cy = float(
-        st.number_input("Centro Y", value=0.0)
-    )
-
-    r = float(
-        st.number_input(
-            "Radio",
-            value=2.0,
-            min_value=0.1
-        )
-    )
-
-    t = np.linspace(0, 2*np.pi, 100)
-
-    x = cx + r*np.cos(t)
-    y = cy + r*np.sin(t)
-
-    P = np.column_stack((x, y))
+    P = hexagono()
 
 # =========================================================
-# MOSTRAR PUNTOS
+# FIGURA SECUNDARIA
 # =========================================================
 
-st.subheader("Coordenadas")
+st.header("Superposición de figuras")
 
-st.write(P)
+usar_figura2 = st.checkbox(
+    "Activar segunda figura"
+)
+
+if usar_figura2:
+
+    tipo2 = st.selectbox(
+        "Figura secundaria",
+        [
+            "Triángulo",
+            "Cuadrado",
+            "Pentágono",
+            "Hexágono"
+        ]
+    )
+
+    if tipo2 == "Triángulo":
+        P2 = triangulo()
+
+    elif tipo2 == "Cuadrado":
+        P2 = cuadrado()
+
+    elif tipo2 == "Pentágono":
+        P2 = pentagono()
+
+    else:
+        P2 = hexagono()
 
 # =========================================================
 # SIDEBAR
 # =========================================================
 
-st.sidebar.header("Parámetros")
+st.sidebar.header("Transformaciones")
 
-a = float(
-    st.sidebar.number_input(
-        "Traslación X",
-        value=0.0
-    )
+a = st.sidebar.slider(
+    "Traslación X",
+    -10.0,
+    10.0,
+    0.0
 )
 
-b = float(
-    st.sidebar.number_input(
-        "Traslación Y",
-        value=0.0
-    )
+b = st.sidebar.slider(
+    "Traslación Y",
+    -10.0,
+    10.0,
+    0.0
 )
 
-k = float(
-    st.sidebar.number_input(
-        "Escala k",
-        value=1.0
-    )
+theta = st.sidebar.slider(
+    "Rotación θ",
+    -360.0,
+    360.0,
+    0.0
 )
 
-theta = float(
-    st.sidebar.number_input(
-        "Rotación θ",
-        value=0.0
-    )
+k = st.sidebar.slider(
+    "Escala k",
+    -5.0,
+    5.0,
+    1.0
 )
 
-# ---------------------------------------------------------
-# CENTRO ROTACIÓN
-# ---------------------------------------------------------
+# =========================================================
+# CENTRO
+# =========================================================
 
 st.sidebar.subheader("Centro de rotación")
 
-x0 = float(
-    st.sidebar.number_input(
-        "x₀",
-        value=0.0
-    )
+x0 = st.sidebar.number_input(
+    "x₀",
+    value=0.0
 )
 
-y0 = float(
-    st.sidebar.number_input(
-        "y₀",
-        value=0.0
-    )
-)
-
-# ---------------------------------------------------------
-# VISTA
-# ---------------------------------------------------------
-
-st.sidebar.subheader("Vista")
-
-x_centro = float(
-    st.sidebar.number_input(
-        "Centro vista X",
-        value=0.0
-    )
-)
-
-y_centro = float(
-    st.sidebar.number_input(
-        "Centro vista Y",
-        value=0.0
-    )
-)
-
-escala_visual = float(
-    st.sidebar.number_input(
-        "Escala visual",
-        value=10.0,
-        min_value=1.0
-    )
+y0 = st.sidebar.number_input(
+    "y₀",
+    value=0.0
 )
 
 # =========================================================
-# TRANSFORMACIONES
+# TRANSFORMACIONES ACTIVAS
 # =========================================================
-
-st.sidebar.header("Transformaciones")
 
 usar_tras = st.sidebar.checkbox(
     "Traslación",
     True
 )
 
-usar_esc = st.sidebar.checkbox(
-    "Escala"
-)
-
 usar_rot = st.sidebar.checkbox(
     "Rotación"
 )
 
+usar_esc = st.sidebar.checkbox(
+    "Homotecia"
+)
+
 usar_refx = st.sidebar.checkbox(
-    "Reflexión X"
+    "Reflexión eje X"
 )
 
 usar_refy = st.sidebar.checkbox(
-    "Reflexión Y"
+    "Reflexión eje Y"
+)
+
+# =========================================================
+# OPCIONES EXTRA
+# =========================================================
+
+st.sidebar.header("Opciones")
+
+mostrar_vertices = st.sidebar.checkbox(
+    "Mostrar vértices",
+    True
+)
+
+mostrar_coordenadas = st.sidebar.checkbox(
+    "Mostrar coordenadas",
+    True
+)
+
+mostrar_rejilla = st.sidebar.checkbox(
+    "Mostrar rejilla",
+    True
 )
 
 # =========================================================
@@ -256,23 +252,7 @@ usar_refy = st.sidebar.checkbox(
 
 def traslacion(P, a, b):
 
-    A = np.eye(2)
-
-    b_vec = np.array([a, b])
-
-    return P + b_vec, A, b_vec
-
-# ---------------------------------------------------------
-
-def escala(P, k):
-
-    A = k * np.eye(2)
-
-    b_vec = np.array([0.0, 0.0])
-
-    return P @ A.T, A, b_vec
-
-# ---------------------------------------------------------
+    return P + np.array([a,b])
 
 def rotacion(P, theta, x0, y0):
 
@@ -283,17 +263,13 @@ def rotacion(P, theta, x0, y0):
         [np.sin(t),  np.cos(t)]
     ])
 
-    centro = np.array([x0, y0])
+    centro = np.array([x0,y0])
 
-    P_shift = P - centro
+    return (P - centro) @ A.T + centro
 
-    P_rot = P_shift @ A.T + centro
+def escala(P, k):
 
-    b_vec = centro - A @ centro
-
-    return P_rot, A, b_vec
-
-# ---------------------------------------------------------
+    return k * P
 
 def refx(P):
 
@@ -302,11 +278,7 @@ def refx(P):
         [0,-1]
     ])
 
-    b_vec = np.array([0.0, 0.0])
-
-    return P @ A.T, A, b_vec
-
-# ---------------------------------------------------------
+    return P @ A.T
 
 def refy(P):
 
@@ -315,151 +287,170 @@ def refy(P):
         [0,1]
     ])
 
-    b_vec = np.array([0.0, 0.0])
-
-    return P @ A.T, A, b_vec
+    return P @ A.T
 
 # =========================================================
-# APLICAR TRANSFORMACIONES
+# APLICAR
 # =========================================================
 
-def aplicar(P):
+def aplicar_transformaciones(P):
 
     P_new = P.copy()
 
-    A_total = np.eye(2)
-
-    b_total = np.array([0.0, 0.0])
-
-    pasos = []
-
-    # -----------------------------------------------------
-
     if usar_esc:
-
-        P_new, A, b_vec = escala(P_new, k)
-
-        A_total = A @ A_total
-
-        b_total = A @ b_total + b_vec
-
-        pasos.append(("Escala", A, b_vec))
-
-    # -----------------------------------------------------
+        P_new = escala(P_new, k)
 
     if usar_rot:
-
-        P_new, A, b_vec = rotacion(
+        P_new = rotacion(
             P_new,
             theta,
             x0,
             y0
         )
 
-        A_total = A @ A_total
-
-        b_total = A @ b_total + b_vec
-
-        pasos.append(("Rotación", A, b_vec))
-
-    # -----------------------------------------------------
-
     if usar_refx:
-
-        P_new, A, b_vec = refx(P_new)
-
-        A_total = A @ A_total
-
-        b_total = A @ b_total + b_vec
-
-        pasos.append(("Reflexión X", A, b_vec))
-
-    # -----------------------------------------------------
+        P_new = refx(P_new)
 
     if usar_refy:
-
-        P_new, A, b_vec = refy(P_new)
-
-        A_total = A @ A_total
-
-        b_total = A @ b_total + b_vec
-
-        pasos.append(("Reflexión Y", A, b_vec))
-
-    # -----------------------------------------------------
+        P_new = refy(P_new)
 
     if usar_tras:
-
-        P_new, A, b_vec = traslacion(
+        P_new = traslacion(
             P_new,
             a,
             b
         )
 
-        A_total = A @ A_total
-
-        b_total = A @ b_total + b_vec
-
-        pasos.append(("Traslación", A, b_vec))
-
-    return P_new, A_total, b_total, pasos
+    return P_new
 
 # =========================================================
-# EJECUTAR
+# TRANSFORMAR
 # =========================================================
 
-P_new, A_total, b_total, pasos = aplicar(P)
+P_new = aplicar_transformaciones(P)
+
+if usar_figura2:
+    P2_new = aplicar_transformaciones(P2)
 
 # =========================================================
 # GRÁFICA
 # =========================================================
 
-fig, ax = plt.subplots(figsize=(7,7))
+fig, ax = plt.subplots(figsize=(9,9))
 
 # ---------------------------------------------------------
-# CERRAR FIGURAS
+# FIGURA ORIGINAL
 # ---------------------------------------------------------
 
-P_cerrado = np.vstack([P, P[0]])
-P_new_cerrado = np.vstack([P_new, P_new[0]])
-
-# ---------------------------------------------------------
-# DIBUJAR
-# ---------------------------------------------------------
+P_c = np.vstack([P, P[0]])
 
 ax.plot(
-    P_cerrado[:,0],
-    P_cerrado[:,1],
+    P_c[:,0],
+    P_c[:,1],
     'k--',
     linewidth=2,
     label="Original"
 )
 
+# ---------------------------------------------------------
+# FIGURA TRANSFORMADA
+# ---------------------------------------------------------
+
+P_new_c = np.vstack([P_new, P_new[0]])
+
 ax.plot(
-    P_new_cerrado[:,0],
-    P_new_cerrado[:,1],
+    P_new_c[:,0],
+    P_new_c[:,1],
     'b-',
-    linewidth=2,
+    linewidth=3,
     label="Transformada"
 )
 
-# ---------------------------------------------------------
-# VISTA
-# ---------------------------------------------------------
+# =========================================================
+# FIGURA SECUNDARIA
+# =========================================================
 
-ax.set_xlim(
-    x_centro - escala_visual,
-    x_centro + escala_visual
+if usar_figura2:
+
+    P2_c = np.vstack([P2, P2[0]])
+
+    ax.plot(
+        P2_c[:,0],
+        P2_c[:,1],
+        'g--',
+        linewidth=2,
+        label="Figura 2"
+    )
+
+    P2_new_c = np.vstack([P2_new, P2_new[0]])
+
+    ax.plot(
+        P2_new_c[:,0],
+        P2_new_c[:,1],
+        'r-',
+        linewidth=3,
+        label="Figura 2 transformada"
+    )
+
+# =========================================================
+# VÉRTICES
+# =========================================================
+
+if mostrar_vertices:
+
+    ax.scatter(
+        P[:,0],
+        P[:,1],
+        s=100,
+        color='black'
+    )
+
+    ax.scatter(
+        P_new[:,0],
+        P_new[:,1],
+        s=100,
+        color='blue'
+    )
+
+# =========================================================
+# COORDENADAS
+# =========================================================
+
+if mostrar_coordenadas:
+
+    for i, p in enumerate(P):
+
+        ax.text(
+            p[0],
+            p[1],
+            f"A{i+1}{tuple(np.round(p,2))}",
+            fontsize=9
+        )
+
+    for i, p in enumerate(P_new):
+
+        ax.text(
+            p[0],
+            p[1],
+            f"B{i+1}{tuple(np.round(p,2))}",
+            fontsize=9
+        )
+
+# =========================================================
+# CENTRO
+# =========================================================
+
+ax.scatter(
+    [x0],
+    [y0],
+    color='red',
+    s=150,
+    label="Centro"
 )
 
-ax.set_ylim(
-    y_centro - escala_visual,
-    y_centro + escala_visual
-)
-
-# ---------------------------------------------------------
+# =========================================================
 # EJES
-# ---------------------------------------------------------
+# =========================================================
 
 ax.spines['left'].set_position('zero')
 ax.spines['bottom'].set_position('zero')
@@ -467,81 +458,116 @@ ax.spines['bottom'].set_position('zero')
 ax.spines['right'].set_color('none')
 ax.spines['top'].set_color('none')
 
-# ---------------------------------------------------------
+ax.set_xlim(-15,15)
+ax.set_ylim(-15,15)
 
 ax.set_aspect('equal')
 
 ax.grid(
-    True,
+    mostrar_rejilla,
     linestyle='--',
-    alpha=0.6
+    alpha=0.5
 )
-
-# ---------------------------------------------------------
-# CENTRO ROTACIÓN
-# ---------------------------------------------------------
-
-ax.scatter(
-    [x0],
-    [y0],
-    color='red',
-    s=100,
-    label="Centro rotación"
-)
-
-# ---------------------------------------------------------
 
 ax.legend()
 
 st.pyplot(fig)
 
 # =========================================================
-# MATRICES PASO A PASO
+# MEDIDAS
 # =========================================================
 
-st.subheader("Transformaciones paso a paso")
+st.header("Análisis geométrico")
 
-for nombre, A, b_vec in pasos:
+col1, col2 = st.columns(2)
 
-    st.write(f"### {nombre}")
+with col1:
 
-    st.write("Matriz A")
+    st.subheader("Figura original")
 
-    st.write(A)
+    st.write("Cantidad de vértices:")
+    st.write(len(P))
 
-    st.write("Vector b")
+    st.write("Coordenadas:")
+    st.write(P)
 
-    st.write(b_vec)
+with col2:
 
-# =========================================================
-# TOTAL
-# =========================================================
+    st.subheader("Figura transformada")
 
-st.subheader("Transformación total")
+    st.write("Cantidad de vértices:")
+    st.write(len(P_new))
 
-st.write("A total")
-
-st.write(A_total)
-
-st.write("b total")
-
-st.write(b_total)
-
-st.latex(r"T(x)=Ax+b")
+    st.write("Coordenadas:")
+    st.write(np.round(P_new,2))
 
 # =========================================================
-# GUARDAR CONFIGURACIÓN
+# MATRIZ DE ROTACIÓN
+# =========================================================
+
+if usar_rot:
+
+    st.subheader("Matriz de rotación")
+
+    t = np.radians(theta)
+
+    A = np.array([
+        [np.cos(t), -np.sin(t)],
+        [np.sin(t),  np.cos(t)]
+    ])
+
+    st.write(np.round(A,3))
+
+# =========================================================
+# EXPLICACIÓN AUTOMÁTICA
+# =========================================================
+
+st.header("Interpretación automática")
+
+texto = []
+
+if usar_tras:
+    texto.append(
+        f"La figura fue trasladada ({a}, {b})."
+    )
+
+if usar_rot:
+    texto.append(
+        f"La figura fue rotada {theta}° alrededor de ({x0}, {y0})."
+    )
+
+if usar_esc:
+    texto.append(
+        f"La figura fue escalada con razón k={k}."
+    )
+
+if usar_refx:
+    texto.append(
+        "La figura fue reflejada respecto al eje X."
+    )
+
+if usar_refy:
+    texto.append(
+        "La figura fue reflejada respecto al eje Y."
+    )
+
+for t in texto:
+    st.write("-", t)
+
+# =========================================================
+# EXPORTAR
 # =========================================================
 
 config = {
-    "a": a,
-    "b": b,
-    "k": k,
-    "theta": theta
+    "traslacion_x": a,
+    "traslacion_y": b,
+    "rotacion": theta,
+    "escala": k,
+    "centro_rotacion": [x0,y0]
 }
 
 st.download_button(
-    "Guardar configuración",
+    "Descargar configuración",
     json.dumps(config, indent=4),
-    "config.json"
+    "configuracion.json"
 )
