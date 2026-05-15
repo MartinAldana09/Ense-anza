@@ -21,6 +21,7 @@ En esta sección aprenderá:
 - Homotecias
 
 Cada tema incluye:
+
 - explicación intuitiva
 - ejemplos gráficos
 - interpretación geométrica
@@ -110,6 +111,7 @@ st.subheader("Ejemplo intuitivo")
 
 st.write("""
 Imagine mover una silla dentro del salón.
+
 La silla sigue igual,
 solo cambia de lugar.
 """)
@@ -155,32 +157,41 @@ Luego se mueve:
 """)
 
 respuesta1 = st.radio(
-    "Seleccione la respuesta correcta",
+    "Seleccione una opción",
     [
         "(7,1)",
         "(5,5)",
         "(7,5)",
         "(2,1)"
     ],
+    index=None,
     key="tras"
 )
 
-if st.button("Verificar traslación"):
+if respuesta1 is not None:
 
-    if respuesta1 == "(7,1)":
-        st.success("""
+    if st.button("Verificar respuesta", key="btn_tras"):
+
+        if respuesta1 == "(7,1)":
+
+            st.success("""
 Perfecto.
 
-El movimiento fue:
+Se realizó:
 
 x: 2 + 5 = 7
 y: 3 - 2 = 1
 """)
-    else:
-        st.error("""
+
+            st.balloons()
+
+        else:
+
+            st.error("""
 Respuesta incorrecta.
 
 Recuerde:
+
 - derecha suma en x
 - abajo resta en y
 """)
@@ -211,7 +222,7 @@ también giran alrededor de un centro.
 st.subheader("Fórmula")
 
 st.latex(
-    r"(x,y)\rightarrow(x\cos\theta-y\sin\theta,\ x\sin\theta+y\cos\theta)"
+r"(x,y)\rightarrow(x\cos\theta-y\sin\theta,\ x\sin\theta+y\cos\theta)"
 )
 
 theta = 90
@@ -254,20 +265,24 @@ alrededor del origen.
 """)
 
 respuesta2 = st.radio(
-    "Seleccione la respuesta correcta",
+    "Seleccione una opción",
     [
         "(0,2)",
         "(2,2)",
         "(0,-2)",
         "(-2,0)"
     ],
+    index=None,
     key="rot"
 )
 
-if st.button("Verificar rotación"):
+if respuesta2 is not None:
 
-    if respuesta2 == "(0,2)":
-        st.success("""
+    if st.button("Verificar respuesta", key="btn_rot"):
+
+        if respuesta2 == "(0,2)":
+
+            st.success("""
 Excelente.
 
 Una rotación de 90° antihorario:
@@ -278,8 +293,12 @@ Entonces:
 
 (2,0) → (0,2)
 """)
-    else:
-        st.error("""
+
+            st.balloons()
+
+        else:
+
+            st.error("""
 Respuesta incorrecta.
 
 Recuerde cómo gira el plano
@@ -346,20 +365,24 @@ respecto al eje X.
 """)
 
 respuesta3 = st.radio(
-    "Seleccione la respuesta correcta",
+    "Seleccione una opción",
     [
         "(4,3)",
         "(-4,-3)",
         "(3,4)",
         "(-4,3)"
     ],
+    index=None,
     key="ref"
 )
 
-if st.button("Verificar reflexión"):
+if respuesta3 is not None:
 
-    if respuesta3 == "(4,3)":
-        st.success("""
+    if st.button("Verificar respuesta", key="btn_ref"):
+
+        if respuesta3 == "(4,3)":
+
+            st.success("""
 Muy bien.
 
 En una reflexión respecto al eje X:
@@ -367,8 +390,12 @@ En una reflexión respecto al eje X:
 - x permanece igual
 - y cambia de signo
 """)
-    else:
-        st.error("""
+
+            st.balloons()
+
+        else:
+
+            st.error("""
 Respuesta incorrecta.
 
 Observe qué coordenada
@@ -435,20 +462,24 @@ al punto:
 """)
 
 respuesta4 = st.radio(
-    "Seleccione la respuesta correcta",
+    "Seleccione una opción",
     [
         "(6,3)",
         "(5,3)",
         "(2,3)",
         "(3,1)"
     ],
+    index=None,
     key="hom"
 )
 
-if st.button("Verificar homotecia"):
+if respuesta4 is not None:
 
-    if respuesta4 == "(6,3)":
-        st.success("""
+    if st.button("Verificar respuesta", key="btn_hom"):
+
+        if respuesta4 == "(6,3)":
+
+            st.success("""
 Correcto.
 
 En una homotecia:
@@ -459,8 +490,12 @@ Entonces:
 
 (2,1) → (6,3)
 """)
-    else:
-        st.error("""
+
+            st.balloons()
+
+        else:
+
+            st.error("""
 Respuesta incorrecta.
 
 Multiplique ambas coordenadas
@@ -526,27 +561,36 @@ C=(1,2)
 """)
 
 respuesta_final = st.radio(
-    "Seleccione la afirmación correcta",
+    "Seleccione una opción",
     [
         "El orden de las transformaciones no importa nunca",
         "La figura cambia completamente de forma",
         "El orden puede cambiar el resultado final",
         "La traslación cambia el tamaño de la figura"
-    ]
+    ],
+    index=None,
+    key="reto"
 )
 
-if st.button("Verificar reto final"):
+if respuesta_final is not None:
 
-    if respuesta_final == "El orden puede cambiar el resultado final":
-        st.success("""
+    if st.button("Verificar respuesta", key="btn_reto"):
+
+        if respuesta_final == "El orden puede cambiar el resultado final":
+
+            st.success("""
 Excelente análisis.
 
 El orden de las transformaciones
 sí puede modificar
 la posición y orientación final.
 """)
-    else:
-        st.error("""
+
+            st.balloons()
+
+        else:
+
+            st.error("""
 Revise nuevamente cómo actúan
 las composiciones de transformaciones.
 """)
