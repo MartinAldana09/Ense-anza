@@ -7,36 +7,35 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("Evaluación: Transformaciones en el Plano")
+st.title("Evaluación Interactiva: Transformaciones en el Plano")
 
 st.write("""
-En esta sección debe utilizar el simulador como:
+Esta evaluación está diseñada para ayudarte a comprender:
 
-- papel milimetrado
-- graficador
-- herramienta de experimentación
-- apoyo para justificar respuestas
-
-Se recomienda:
-
-- superponer figuras
-- probar transformaciones
-- verificar coordenadas
-- analizar si el orden cambia el resultado
+- Traslaciones
+- Rotaciones
+- Reflexiones
+- Homotecias
+- Composición de transformaciones
+- Interpretación geométrica
 """)
+
+# =========================================================
+# DATOS ESTUDIANTE
+# =========================================================
+
+st.subheader("Información del estudiante")
+
+nombre = st.text_input("Nombre")
+curso = st.text_input("Curso")
 
 st.divider()
 
 # =========================================================
-# FUNCIÓN PARA GRAFICAR
+# FUNCIONES GRAFICAR
 # =========================================================
 
-def graficar_figuras(
-    P1,
-    P2=None,
-    nombre1="Figura 1",
-    nombre2="Figura 2"
-):
+def dibujar(P1, P2=None, titulo="Plano"):
 
     fig, ax = plt.subplots(figsize=(7,7))
 
@@ -45,15 +44,13 @@ def graficar_figuras(
     ax.plot(
         P1_c[:,0],
         P1_c[:,1],
-        'b-',
+        'k--',
         linewidth=2,
-        label=nombre1
+        label="Figura original"
     )
 
-    ax.scatter(P1[:,0], P1[:,1], color='blue')
-
     for i, p in enumerate(P1):
-        ax.text(p[0], p[1], f"A{i+1}")
+        ax.text(p[0], p[1], f"A{i+1}", fontsize=12)
 
     if P2 is not None:
 
@@ -62,15 +59,13 @@ def graficar_figuras(
         ax.plot(
             P2_c[:,0],
             P2_c[:,1],
-            'r--',
+            'b-',
             linewidth=2,
-            label=nombre2
+            label="Figura transformada"
         )
 
-        ax.scatter(P2[:,0], P2[:,1], color='red')
-
         for i, p in enumerate(P2):
-            ax.text(p[0], p[1], f"B{i+1}")
+            ax.text(p[0], p[1], f"B{i+1}", fontsize=12)
 
     ax.spines['left'].set_position('zero')
     ax.spines['bottom'].set_position('zero')
@@ -80,8 +75,8 @@ def graficar_figuras(
 
     ax.grid(True, linestyle='--', alpha=0.5)
 
-    ax.set_xlim(-2,12)
-    ax.set_ylim(-2,12)
+    ax.set_xlim(-5, 12)
+    ax.set_ylim(-5, 12)
 
     ax.set_aspect('equal')
 
@@ -90,37 +85,27 @@ def graficar_figuras(
     st.pyplot(fig)
 
 # =========================================================
-# EJERCICIO 1
+# INTRODUCCIÓN
 # =========================================================
 
-st.header("Ejercicio 1 — Dos caminos diferentes")
+st.header("Situación")
 
 st.write("""
-Se tienen dos triángulos en el plano cartesiano.
+Un diseñador gráfico está usando transformaciones geométricas
+para mover figuras en el plano cartesiano.
+
+Tu objetivo será descubrir qué transformación ocurrió
+y luego intentar reproducirla usando el simulador.
 """)
 
-col1, col2 = st.columns(2)
-
-with col1:
-
-    st.subheader("Triángulo A")
-
-    st.latex(r"A_1=\left(\frac12,\frac32\right)")
-    st.latex(r"A_2=\left(\frac72,\frac32\right)")
-    st.latex(r"A_3=\left(\frac12,\frac92\right)")
-
-with col2:
-
-    st.subheader("Triángulo B")
-
-    st.latex(r"B_1=(3,1)")
-    st.latex(r"B_2=(9,1)")
-    st.latex(r"B_3=(3,7)")
+# =========================================================
+# FIGURAS
+# =========================================================
 
 A = np.array([
-    [0.5,1.5],
-    [3.5,1.5],
-    [0.5,4.5]
+    [0.5, 1.5],
+    [3.5, 1.5],
+    [0.5, 4.5]
 ])
 
 B = np.array([
@@ -129,404 +114,484 @@ B = np.array([
     [3,7]
 ])
 
-st.subheader("Visualización")
+st.subheader("Triángulos")
 
-graficar_figuras(
-    A,
-    B,
-    "Triángulo A",
-    "Triángulo B"
-)
+col1, col2 = st.columns(2)
 
-st.subheader("Pregunta a)")
+with col1:
 
-st.write("""
-Observe cuidadosamente ambas figuras.
+    st.write("Triángulo original")
 
-Utilice el simulador para:
+    st.latex(r"A_1=\left(\frac12,\frac32\right)")
+    st.latex(r"A_2=\left(\frac72,\frac32\right)")
+    st.latex(r"A_3=\left(\frac12,\frac92\right)")
 
-- comparar tamaños
-- verificar distancias
-- analizar coordenadas
-- probar transformaciones
+with col2:
 
-Escriba qué relación observa entre A y B.
-""")
+    st.write("Triángulo transformado")
 
-respuesta_a = st.text_area(
-    "Respuesta a)",
-    placeholder="""
-Ejemplo de formato:
+    st.latex(r"B_1=(3,1)")
+    st.latex(r"B_2=(9,1)")
+    st.latex(r"B_3=(3,7)")
 
-'El triángulo B parece una homotecia de razón 2 aplicada al triángulo A.'
-""",
-    height=150
-)
-
-if st.button("Verificar análisis", key="a"):
-
-    if len(respuesta_a) > 30:
-
-        st.success("""
-Buen análisis.
-
-La idea es identificar:
-
-- cambios de tamaño
-- posibles traslaciones
-- relaciones entre coordenadas
-- composiciones de transformaciones
-""")
-
-    else:
-
-        st.warning("""
-La respuesta es demasiado corta.
-
-Justifique observando coordenadas y transformaciones.
-""")
+dibujar(A, B)
 
 # =========================================================
-# PREGUNTA B
+# PREGUNTA 1
 # =========================================================
-
-st.subheader("Pregunta b)")
-
-st.write("""
-Encuentre DOS secuencias diferentes de transformaciones
-que lleven el triángulo A sobre el triángulo B.
-
-Debe indicar:
-
-- tipo de transformación
-- parámetros
-- orden
-- coordenadas intermedias
-
-Use el simulador para probar sus ideas.
-""")
-
-respuesta_b = st.text_area(
-    "Respuesta b)",
-    placeholder="""
-Ejemplo:
-
-1. Homotecia de razón ...
-2. Traslación con vector ...
-
-Coordenadas intermedias:
-(...)
-""",
-    height=220
-)
-
-if st.button("Validar secuencia", key="b"):
-
-    if len(respuesta_b) > 80:
-
-        st.success("""
-La respuesta tiene suficiente desarrollo.
-
-Verifique:
-
-- orden correcto
-- parámetros claros
-- coordenadas coherentes
-- justificación geométrica
-""")
-
-    else:
-
-        st.warning("""
-Falta desarrollo.
-
-Explique mejor las transformaciones y el orden.
-""")
-
-# =========================================================
-# PREGUNTA C
-# =========================================================
-
-st.subheader("Pregunta c)")
-
-st.write("""
-Compare las dos secuencias encontradas.
-
-Explique:
-
-- cuál parece más eficiente
-- si el orden cambia el resultado
-- por qué ocurre eso
-""")
-
-respuesta_c = st.text_area(
-    "Respuesta c)",
-    placeholder="""
-Ejemplo:
-
-'El orden sí cambia el resultado porque...'
-""",
-    height=180
-)
-
-if st.button("Revisar argumentación", key="c"):
-
-    if len(respuesta_c) > 60:
-
-        st.success("""
-La argumentación tiene buena estructura.
-
-Recuerde justificar usando propiedades
-de las transformaciones geométricas.
-""")
-
-    else:
-
-        st.warning("""
-Debe justificar más claramente sus ideas.
-""")
 
 st.divider()
 
-# =========================================================
-# EJERCICIO 2
-# =========================================================
-
-st.header("Ejercicio 2 — La transformación perdida")
+st.header("Pregunta 1")
 
 st.write("""
-Un estudiante aplicó varias transformaciones a un cuadrado.
+¿Qué parece haber ocurrido con el tamaño del triángulo?
 """)
 
-st.write("""
-Paso 1:
-Traslación con vector (2,-1)
-
-Paso 2:
-Transformación desconocida T
-
-Paso 3:
-Homotecia de razón k=3
-""")
-
-C = np.array([
-    [0,0],
-    [1,0],
-    [1,1],
-    [0,1]
-])
-
-C_final = np.array([
-    [6,3],
-    [9,3],
-    [9,6],
-    [6,6]
-])
-
-st.subheader("Superposición de figuras")
-
-graficar_figuras(
-    C,
-    C_final,
-    "Cuadrado original",
-    "Resultado final"
+respuesta1 = st.radio(
+    "Seleccione una opción",
+    [
+        "El triángulo disminuyó",
+        "El triángulo conservó exactamente el mismo tamaño",
+        "El triángulo aumentó de tamaño",
+        "El triángulo desapareció"
+    ],
+    key="p1"
 )
 
-st.subheader("Pregunta")
+if st.button("Validar pregunta 1"):
 
-st.write("""
-Determine cuál podría ser
-la transformación desconocida T.
-
-Debe indicar:
-
-- tipo
-- parámetros
-- explicación
-- justificación
-""")
-
-respuesta2 = st.text_area(
-    "Respuesta ejercicio 2",
-    placeholder="""
-Ejemplo:
-
-'T parece ser una reflexión respecto...'
-""",
-    height=220
-)
-
-if st.button("Validar ejercicio 2"):
-
-    if len(respuesta2) > 70:
+    if respuesta1 == "El triángulo aumentó de tamaño":
 
         st.success("""
-Buen trabajo.
+Correcto.
 
-Utilice el simulador para comprobar:
+El triángulo destino es más grande.
+Parece existir una homotecia o escala.
+""")
 
-- distancias
-- orientación
-- tamaño
-- posición
+    else:
+
+        st.error("""
+Incorrecto.
+
+Observa que las longitudes aumentaron.
+""")
+
+# =========================================================
+# PREGUNTA 2
+# =========================================================
+
+st.divider()
+
+st.header("Pregunta 2")
+
+st.write("""
+¿Qué transformación mueve una figura sin cambiar
+su tamaño ni su orientación?
+""")
+
+respuesta2 = st.radio(
+    "Seleccione la transformación",
+    [
+        "Rotación",
+        "Homotecia",
+        "Traslación",
+        "Reflexión"
+    ],
+    key="p2"
+)
+
+if st.button("Validar pregunta 2"):
+
+    if respuesta2 == "Traslación":
+
+        st.success("""
+Excelente.
+
+La traslación solo mueve la figura.
 """)
 
     else:
 
         st.warning("""
-La respuesta necesita más análisis geométrico.
+No exactamente.
+
+Piensa cuál transformación solo desplaza
+todos los puntos la misma distancia.
 """)
+
+# =========================================================
+# PREGUNTA 3
+# =========================================================
 
 st.divider()
 
-# =========================================================
-# EJERCICIO 3
-# =========================================================
-
-st.header("Ejercicio 3 — Creando un vitral")
+st.header("Pregunta 3")
 
 st.write("""
-La figura base es:
+Si una figura rota 90° antihorario alrededor del origen,
+¿qué ocurre?
 """)
 
-st.latex(r"P=(0,0)")
-st.latex(r"Q=(2,0)")
-st.latex(r"R=(0,3)")
-
-P_base = np.array([
-    [0,0],
-    [2,0],
-    [0,3]
-])
-
-st.subheader("Figura original")
-
-graficar_figuras(
-    P_base,
-    None,
-    "Figura original"
+respuesta3 = st.radio(
+    "Seleccione una opción",
+    [
+        "La figura cambia de tamaño",
+        "La figura gira",
+        "La figura desaparece",
+        "La figura se refleja"
+    ],
+    key="p3"
 )
 
-st.write("""
-Aplique en orden:
+if st.button("Validar pregunta 3"):
 
-1. Reflexión respecto al eje X
-2. Traslación con vector (3,2)
-
-Use el simulador para encontrar
-las coordenadas finales.
-""")
-
-respuesta3 = st.text_area(
-    "Respuesta ejercicio 3",
-    placeholder="""
-Escriba las coordenadas así:
-
-P'=(...)
-Q'=(...)
-R'=(...)
-
-Luego explique qué ocurrió.
-""",
-    height=250
-)
-
-if st.button("Validar ejercicio 3"):
-
-    if len(respuesta3) > 80:
+    if respuesta3 == "La figura gira":
 
         st.success("""
-La respuesta tiene suficiente desarrollo.
+Perfecto.
 
-Compruebe en el simulador:
+Una rotación produce un giro alrededor de un punto.
+""")
 
-- reflexión
+    else:
+
+        st.error("""
+Incorrecto.
+
+Una rotación produce un giro.
+""")
+
+# =========================================================
+# PREGUNTA 4
+# =========================================================
+
+st.divider()
+
+st.header("Pregunta 4")
+
+st.write("""
+¿Qué hace una reflexión respecto al eje X?
+""")
+
+respuesta4 = st.radio(
+    "Seleccione una opción",
+    [
+        "Duplica el tamaño",
+        "Mueve la figura hacia arriba",
+        "Produce una imagen especular",
+        "Rota 180 grados"
+    ],
+    key="p4"
+)
+
+if st.button("Validar pregunta 4"):
+
+    if respuesta4 == "Produce una imagen especular":
+
+        st.success("""
+Muy bien.
+
+La reflexión crea un efecto espejo.
+""")
+
+    else:
+
+        st.error("""
+Incorrecto.
+
+La reflexión produce una imagen especular.
+""")
+
+# =========================================================
+# PREGUNTA 5
+# =========================================================
+
+st.divider()
+
+st.header("Pregunta 5")
+
+st.write("""
+Si k = 2 en una homotecia,
+¿qué sucede con la figura?
+""")
+
+respuesta5 = st.radio(
+    "Seleccione una opción",
+    [
+        "La figura se hace dos veces más grande",
+        "La figura gira",
+        "La figura desaparece",
+        "La figura se traslada"
+    ],
+    key="p5"
+)
+
+if st.button("Validar pregunta 5"):
+
+    if respuesta5 == "La figura se hace dos veces más grande":
+
+        st.success("""
+Correcto.
+
+La homotecia con k=2 duplica el tamaño.
+""")
+
+    else:
+
+        st.warning("""
+Incorrecto.
+
+Recuerda que la homotecia cambia el tamaño.
+""")
+
+# =========================================================
+# SIMULADOR
+# =========================================================
+
+st.divider()
+
+st.header("Simulador para resolver el problema")
+
+st.write("""
+Intenta transformar el triángulo original
+para hacerlo coincidir con el triángulo destino.
+""")
+
+# =========================================================
+# PARÁMETROS
+# =========================================================
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+
+    a = st.number_input(
+        "Traslación X",
+        value=0.0
+    )
+
+    b = st.number_input(
+        "Traslación Y",
+        value=0.0
+    )
+
+with col2:
+
+    k = st.number_input(
+        "Escala k",
+        value=1.0
+    )
+
+with col3:
+
+    theta = st.number_input(
+        "Rotación θ",
+        value=0.0
+    )
+
+# =========================================================
+# TRANSFORMACIONES
+# =========================================================
+
+def escala(P, k):
+
+    A = k * np.eye(2)
+
+    return P @ A.T
+
+# ---------------------------------------------------------
+
+def traslacion(P, a, b):
+
+    return P + np.array([a,b])
+
+# ---------------------------------------------------------
+
+def rotacion(P, theta):
+
+    t = np.radians(theta)
+
+    A = np.array([
+        [np.cos(t), -np.sin(t)],
+        [np.sin(t),  np.cos(t)]
+    ])
+
+    return P @ A.T
+
+# =========================================================
+# APLICAR
+# =========================================================
+
+P_new = A.copy()
+
+P_new = escala(P_new, k)
+
+P_new = rotacion(P_new, theta)
+
+P_new = traslacion(P_new, a, b)
+
+# =========================================================
+# GRAFICAR RESULTADO
+# =========================================================
+
+fig, ax = plt.subplots(figsize=(8,8))
+
+A_c = np.vstack([A, A[0]])
+B_c = np.vstack([B, B[0]])
+P_c = np.vstack([P_new, P_new[0]])
+
+# ORIGINAL
+
+ax.plot(
+    A_c[:,0],
+    A_c[:,1],
+    'k--',
+    linewidth=2,
+    label="Original"
+)
+
+# DESTINO
+
+ax.plot(
+    B_c[:,0],
+    B_c[:,1],
+    'g-',
+    linewidth=2,
+    label="Destino"
+)
+
+# ESTUDIANTE
+
+ax.plot(
+    P_c[:,0],
+    P_c[:,1],
+    'b-',
+    linewidth=2,
+    label="Tu transformación"
+)
+
+ax.spines['left'].set_position('zero')
+ax.spines['bottom'].set_position('zero')
+
+ax.spines['right'].set_color('none')
+ax.spines['top'].set_color('none')
+
+ax.grid(True, linestyle='--', alpha=0.5)
+
+ax.set_xlim(-5, 12)
+ax.set_ylim(-5, 12)
+
+ax.set_aspect('equal')
+
+ax.legend()
+
+st.pyplot(fig)
+
+# =========================================================
+# VALIDACIÓN
+# =========================================================
+
+error = np.linalg.norm(P_new - B)
+
+if error < 0.01:
+
+    st.success("""
+Excelente.
+
+Has encontrado correctamente
+la transformación.
+""")
+
+else:
+
+    st.info("""
+La figura todavía no coincide exactamente.
+
+Sigue experimentando con:
+- escala
+- rotación
 - traslación
-- coordenadas finales
-- orientación de la figura
 """)
 
-    else:
-
-        st.warning("""
-Falta justificar mejor el procedimiento.
-""")
+# =========================================================
+# MATRICES
+# =========================================================
 
 st.divider()
 
+st.header("Representación matricial")
+
+t = np.radians(theta)
+
+A_mat = k * np.array([
+    [np.cos(t), -np.sin(t)],
+    [np.sin(t),  np.cos(t)]
+])
+
+b_vec = np.array([a,b])
+
+st.write("Matriz A")
+
+st.write(A_mat)
+
+st.write("Vector b")
+
+st.write(b_vec)
+
+st.latex(r"T(x)=Ax+b")
+
 # =========================================================
-# EJERCICIO 4
+# PREGUNTA FINAL
 # =========================================================
 
-st.header("Ejercicio 4 — Deshaciendo transformaciones")
+st.divider()
 
-st.write("""
-Una figura sufrió esta secuencia:
+st.header("Reflexión final")
 
-1. Rotación π/3 antihoraria
-2. Homotecia k=1/2
-3. Traslación (-2,3)
-
-Escriba la secuencia inversa completa.
-""")
-
-respuesta4 = st.text_area(
-    "Secuencia inversa",
-    placeholder="""
-Ejemplo:
-
-1. ...
-2. ...
-3. ...
-
-Explique por qué cada paso deshace el anterior.
-""",
-    height=250
+respuesta_final = st.radio(
+    "¿El orden de las transformaciones puede cambiar el resultado?",
+    [
+        "Sí",
+        "No"
+    ]
 )
 
-if st.button("Revisar secuencia inversa"):
+if st.button("Validar reflexión final"):
 
-    if len(respuesta4) > 100:
+    if respuesta_final == "Sí":
 
         st.success("""
-Muy buena argumentación.
+Correcto.
 
-Recuerde:
-
-- la inversa de una traslación
-  usa el vector opuesto
-
-- la inversa de una rotación
-  usa el ángulo contrario
-
-- la inversa de una homotecia
-  usa razón recíproca
+El orden sí importa.
+Por ejemplo:
+rotar y luego trasladar
+no siempre da el mismo resultado
+que trasladar y luego rotar.
 """)
 
     else:
 
-        st.warning("""
-Explique con más detalle
-cómo se deshace cada transformación.
+        st.error("""
+Incorrecto.
+
+El orden de las transformaciones
+sí puede cambiar el resultado.
 """)
+
+# =========================================================
+# FINAL
+# =========================================================
 
 st.divider()
 
-st.header("Conclusión")
+if st.button("Enviar evaluación"):
 
-st.write("""
-El simulador funciona como:
+    st.success(f"""
+Evaluación enviada correctamente.
 
-- plano cartesiano
-- laboratorio geométrico
-- herramienta de validación
-- espacio de exploración matemática
-
-La idea no es solo obtener respuestas,
-sino comprender:
-
-- cómo actúan las transformaciones
-- cómo se combinan
-- cómo cambia una figura
-- por qué el orden importa
+Estudiante: {nombre}
+Curso: {curso}
 """)
