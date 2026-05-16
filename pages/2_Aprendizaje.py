@@ -1,33 +1,112 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
+
+# =========================================================
+# CONFIGURACIÓN
+# =========================================================
 
 st.set_page_config(
     page_title="Aprendizaje",
     layout="wide"
 )
 
+# =========================================================
+# ESTILO
+# =========================================================
+
+st.markdown("""
+<style>
+
+.main {
+    background-color: #f5f7fb;
+}
+
+h1 {
+    color: #003366;
+    text-align: center;
+    font-size: 42px;
+}
+
+h2 {
+    color: #004080;
+    border-left: 6px solid #004080;
+    padding-left: 12px;
+}
+
+h3 {
+    color: #003366;
+}
+
+.block-container {
+    padding-top: 2rem;
+}
+
+section[data-testid="stSidebar"] {
+    background-color: #eaf2ff;
+}
+
+.stButton>button {
+    width: 100%;
+    border-radius: 10px;
+    background-color: #003366;
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 0.6rem;
+}
+
+.stButton>button:hover {
+    background-color: #0055aa;
+    color: white;
+}
+
+.info-box {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 6px solid #003366;
+    box-shadow: 0px 2px 8px rgba(0,0,0,0.08);
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+# =========================================================
+# PORTADA
+# =========================================================
+
 st.title("Aprendizaje de Transformaciones Geométricas")
 
-st.write("""
+st.markdown("""
+<div class="info-box">
+
 Las transformaciones geométricas permiten mover, girar,
 reflejar o cambiar el tamaño de figuras en el plano cartesiano.
 
-En esta sección aprenderá:
+En esta sección estudiará:
 
-- Traslaciones
-- Rotaciones
-- Reflexiones
-- Homotecias
+<ul>
+<li>Traslaciones</li>
+<li>Rotaciones</li>
+<li>Reflexiones</li>
+<li>Homotecias</li>
+</ul>
 
 Cada tema incluye:
 
-- explicación intuitiva
-- ejemplos gráficos
-- interpretación geométrica
-- ejercicios interactivos
-- validación automática
-""")
+<ul>
+<li>Explicación intuitiva</li>
+<li>Interpretación geométrica</li>
+<li>Representación algebraica</li>
+<li>Visualización gráfica</li>
+<li>Ejercicios interactivos</li>
+<li>Validación automática</li>
+</ul>
+
+</div>
+""", unsafe_allow_html=True)
 
 st.divider()
 
@@ -37,29 +116,67 @@ st.divider()
 
 def graficar(P, P2, titulo1, titulo2):
 
-    fig, ax = plt.subplots(figsize=(6,6))
+    fig, ax = plt.subplots(figsize=(8,8))
 
     P_c = np.vstack([P, P[0]])
     P2_c = np.vstack([P2, P2[0]])
 
+    # -----------------------------------------------------
+
     ax.plot(
         P_c[:,0],
         P_c[:,1],
-        'k--',
-        linewidth=2,
+        linestyle='--',
+        linewidth=3,
         label=titulo1
     )
 
     ax.plot(
         P2_c[:,0],
         P2_c[:,1],
-        'b-',
-        linewidth=2,
+        linewidth=3,
         label=titulo2
     )
 
-    ax.scatter(P[:,0], P[:,1], color='black')
-    ax.scatter(P2[:,0], P2[:,1], color='blue')
+    # -----------------------------------------------------
+
+    ax.scatter(
+        P[:,0],
+        P[:,1],
+        s=90
+    )
+
+    ax.scatter(
+        P2[:,0],
+        P2[:,1],
+        s=90
+    )
+
+    # -----------------------------------------------------
+    # NOMBRES
+    # -----------------------------------------------------
+
+    letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+    for i, p in enumerate(P):
+
+        ax.text(
+            p[0],
+            p[1],
+            letras[i],
+            fontsize=13
+        )
+
+    for i, p in enumerate(P2):
+
+        ax.text(
+            p[0],
+            p[1],
+            letras[i] + "'",
+            fontsize=13
+        )
+
+    # -----------------------------------------------------
 
     ax.spines['left'].set_position('zero')
     ax.spines['bottom'].set_position('zero')
@@ -67,14 +184,20 @@ def graficar(P, P2, titulo1, titulo2):
     ax.spines['right'].set_color('none')
     ax.spines['top'].set_color('none')
 
-    ax.grid(True, linestyle='--', alpha=0.5)
+    # -----------------------------------------------------
+
+    ax.grid(
+        True,
+        linestyle='--',
+        alpha=0.5
+    )
 
     ax.set_xlim(-8,8)
     ax.set_ylim(-8,8)
 
     ax.set_aspect('equal')
 
-    ax.legend()
+    ax.legend(fontsize=11)
 
     st.pyplot(fig)
 
@@ -94,7 +217,11 @@ P = np.array([
 
 st.header("Traslación")
 
-st.write("""
+col1, col2 = st.columns([1.2,1])
+
+with col1:
+
+    st.write("""
 Una traslación mueve todos los puntos
 la misma distancia y en la misma dirección.
 
@@ -104,21 +231,34 @@ La figura:
 - no cambia de tamaño
 - no cambia de forma
 
-solo cambia de posición.
+únicamente cambia de posición.
 """)
 
-st.subheader("Ejemplo intuitivo")
+    st.subheader("Representación algebraica")
 
-st.write("""
-Imagine mover una silla dentro del salón.
+    st.latex(r"(x,y)\rightarrow(x+a,y+b)")
 
-La silla sigue igual,
-solo cambia de lugar.
+    st.subheader("Interpretación")
+
+    st.write("""
+El vector de traslación determina:
+
+- cuánto se mueve la figura horizontalmente
+- cuánto se mueve verticalmente
 """)
 
-st.subheader("Fórmula")
+with col2:
 
-st.latex(r"(x,y)\rightarrow(x+a,y+b)")
+    st.info("""
+Ejemplo intuitivo:
+
+Mover una silla dentro del salón.
+
+La silla sigue siendo exactamente la misma,
+solo cambia de ubicación.
+""")
+
+# ---------------------------------------------------------
 
 a = 3
 b = 2
@@ -128,72 +268,74 @@ P_tras = P + np.array([a,b])
 graficar(
     P,
     P_tras,
-    "Original",
-    "Trasladada"
+    "Figura original",
+    "Figura trasladada"
 )
 
-st.subheader("Interpretación")
+# ---------------------------------------------------------
 
-st.write(f"""
-Cada punto se desplazó:
+st.subheader("Tabla de coordenadas")
 
-- {a} unidades en x
-- {b} unidades en y
-""")
+tabla_tras = pd.DataFrame({
+    "Original": [tuple(p) for p in P],
+    "Transformada": [tuple(np.round(p,2)) for p in P_tras]
+})
 
-st.subheader("Ejercicio interactivo")
+st.table(tabla_tras)
+
+# ---------------------------------------------------------
+
+st.subheader("Ejercicio")
 
 st.write("""
-Un dron está en el punto:
+Un dron se encuentra en el punto:
 
+\[
 (2,3)
+\]
 
-Luego se mueve:
+Luego realiza el siguiente movimiento:
 
 - 5 unidades a la derecha
 - 2 unidades hacia abajo
 
-¿Dónde termina?
+Escriba la respuesta exactamente en el formato:
+
+( x , y )
 """)
 
-respuesta1 = st.radio(
-    "Seleccione una opción",
-    [
-        "(7,1)",
-        "(5,5)",
-        "(7,5)",
-        "(2,1)"
-    ],
-    index=None,
+respuesta1 = st.text_input(
+    "Ingrese su respuesta",
     key="tras"
 )
 
-if respuesta1 is not None:
+if st.button("Verificar respuesta", key="btn_tras"):
 
-    if st.button("Verificar respuesta", key="btn_tras"):
+    if respuesta1.replace(" ","") == "(7,1)":
 
-        if respuesta1 == "(7,1)":
+        st.success("""
+Respuesta correcta.
 
-            st.success("""
-Perfecto.
+Cálculo realizado:
 
-Se realizó:
+x = 2 + 5 = 7
 
-x: 2 + 5 = 7
-y: 3 - 2 = 1
+y = 3 - 2 = 1
 """)
 
-            st.balloons()
+    else:
 
-        else:
-
-            st.error("""
+        st.error("""
 Respuesta incorrecta.
 
 Recuerde:
 
 - derecha suma en x
 - abajo resta en y
+
+Formato esperado:
+
+(7,1)
 """)
 
 st.divider()
@@ -204,26 +346,34 @@ st.divider()
 
 st.header("Rotación")
 
-st.write("""
+col1, col2 = st.columns([1.2,1])
+
+with col1:
+
+    st.write("""
 Una rotación gira una figura
 alrededor de un punto fijo.
+
+Ese punto recibe el nombre de:
+
+centro de rotación.
 """)
 
-st.subheader("Ejemplo intuitivo")
+    st.subheader("Representación algebraica")
 
-st.write("""
-Las aspas de un ventilador
-realizan rotaciones.
+    :contentReference[oaicite:0]{index=0}
 
-Las manecillas de un reloj
-también giran alrededor de un centro.
+with col2:
+
+    st.info("""
+Ejemplos cotidianos:
+
+- las aspas de un ventilador
+- las manecillas de un reloj
+- una puerta al abrirse
 """)
 
-st.subheader("Fórmula")
-
-st.latex(
-r"(x,y)\rightarrow(x\cos\theta-y\sin\theta,\ x\sin\theta+y\cos\theta)"
-)
+# ---------------------------------------------------------
 
 theta = 90
 
@@ -239,70 +389,73 @@ P_rot = P @ A.T
 graficar(
     P,
     P_rot,
-    "Original",
-    "Rotada"
+    "Figura original",
+    "Figura rotada"
 )
 
-st.subheader("Interpretación")
+# ---------------------------------------------------------
+
+st.subheader("Interpretación geométrica")
 
 st.write("""
-La figura giró 90 grados
-en sentido antihorario
-alrededor del origen.
+La figura se rotó:
+
+- 90° antihorario
+- alrededor del origen
+
+En una rotación de 90° antihorario:
+
+\[
+(x,y)\rightarrow(-y,x)
+\]
 """)
 
-st.subheader("Ejercicio interactivo")
+# ---------------------------------------------------------
+
+st.subheader("Ejercicio")
 
 st.write("""
 El punto:
 
+\[
 (2,0)
+\]
 
-se rota 90° antihorario
-alrededor del origen.
+se rota 90° antihorario alrededor del origen.
 
-¿Dónde queda?
+Ingrese la respuesta usando el formato:
+
+(x,y)
 """)
 
-respuesta2 = st.radio(
-    "Seleccione una opción",
-    [
-        "(0,2)",
-        "(2,2)",
-        "(0,-2)",
-        "(-2,0)"
-    ],
-    index=None,
+respuesta2 = st.text_input(
+    "Ingrese su respuesta",
     key="rot"
 )
 
-if respuesta2 is not None:
+if st.button("Verificar respuesta", key="btn_rot"):
 
-    if st.button("Verificar respuesta", key="btn_rot"):
+    if respuesta2.replace(" ","") == "(0,2)":
 
-        if respuesta2 == "(0,2)":
+        st.success("""
+Respuesta correcta.
 
-            st.success("""
-Excelente.
-
-Una rotación de 90° antihorario:
+Aplicando:
 
 (x,y) → (-y,x)
 
-Entonces:
+se obtiene:
 
 (2,0) → (0,2)
 """)
 
-            st.balloons()
+    else:
 
-        else:
-
-            st.error("""
+        st.error("""
 Respuesta incorrecta.
 
-Recuerde cómo gira el plano
-en sentido antihorario.
+Observe el sentido antihorario
+de la rotación.
 """)
 
 st.divider()
@@ -313,22 +466,32 @@ st.divider()
 
 st.header("Reflexión")
 
-st.write("""
+col1, col2 = st.columns([1.2,1])
+
+with col1:
+
+    st.write("""
 Una reflexión produce
 una imagen especular.
+
+La figura queda invertida
+respecto a una recta.
 """)
 
-st.subheader("Ejemplo intuitivo")
+    st.subheader("Reflexión respecto al eje X")
 
-st.write("""
+    :contentReference[oaicite:1]{index=1}
+
+with col2:
+
+    st.info("""
+Ejemplo intuitivo:
+
 Cuando una persona se mira
-en un espejo,
-aparece una reflexión.
+en un espejo.
 """)
 
-st.subheader("Reflexión respecto al eje X")
-
-st.latex(r"(x,y)\rightarrow(x,-y)")
+# ---------------------------------------------------------
 
 A_refx = np.array([
     [1,0],
@@ -340,65 +503,61 @@ P_ref = P @ A_refx.T
 graficar(
     P,
     P_ref,
-    "Original",
-    "Reflejada"
+    "Figura original",
+    "Figura reflejada"
 )
 
-st.subheader("Interpretación")
+# ---------------------------------------------------------
+
+st.subheader("Interpretación geométrica")
 
 st.write("""
-Las coordenadas x
-permanecen iguales.
+En una reflexión respecto al eje X:
 
-Las coordenadas y
-cambian de signo.
+- las coordenadas x permanecen iguales
+- las coordenadas y cambian de signo
 """)
 
-st.subheader("Ejercicio interactivo")
+# ---------------------------------------------------------
+
+st.subheader("Ejercicio")
 
 st.write("""
 Refleje el punto:
 
+\[
 (4,-3)
+\]
 
 respecto al eje X.
+
+Ingrese la respuesta en formato:
+
+(x,y)
 """)
 
-respuesta3 = st.radio(
-    "Seleccione una opción",
-    [
-        "(4,3)",
-        "(-4,-3)",
-        "(3,4)",
-        "(-4,3)"
-    ],
-    index=None,
+respuesta3 = st.text_input(
+    "Ingrese su respuesta",
     key="ref"
 )
 
-if respuesta3 is not None:
+if st.button("Verificar respuesta", key="btn_ref"):
 
-    if st.button("Verificar respuesta", key="btn_ref"):
+    if respuesta3.replace(" ","") == "(4,3)":
 
-        if respuesta3 == "(4,3)":
+        st.success("""
+Respuesta correcta.
 
-            st.success("""
-Muy bien.
-
-En una reflexión respecto al eje X:
-
-- x permanece igual
-- y cambia de signo
+La coordenada x permanece igual
+y la coordenada y cambia de signo.
 """)
 
-            st.balloons()
+    else:
 
-        else:
-
-            st.error("""
+        st.error("""
 Respuesta incorrecta.
 
-Observe qué coordenada
+Observe cuál coordenada
 debe cambiar de signo.
 """)
 
@@ -410,23 +569,36 @@ st.divider()
 
 st.header("Homotecia")
 
-st.write("""
+col1, col2 = st.columns([1.2,1])
+
+with col1:
+
+    st.write("""
 Una homotecia cambia
 el tamaño de una figura.
+
+Puede:
+
+- ampliar
+- reducir
+
+manteniendo la forma geométrica.
 """)
 
-st.subheader("Ejemplo intuitivo")
+    st.subheader("Representación algebraica")
 
-st.write("""
-Cuando amplía una imagen
-en el celular,
-la figura conserva la forma,
-pero cambia de tamaño.
+    :contentReference[oaicite:2]{index=2}
+
+with col2:
+
+    st.info("""
+Ejemplo intuitivo:
+
+Ampliar o reducir una imagen
+en el celular.
 """)
 
-st.subheader("Fórmula")
-
-st.latex(r"(x,y)\rightarrow(kx,ky)")
+# ---------------------------------------------------------
 
 k = 2
 
@@ -435,67 +607,72 @@ P_hom = k * P
 graficar(
     P,
     P_hom,
-    "Original",
+    "Figura original",
     "Homotecia"
 )
 
-st.subheader("Interpretación")
+# ---------------------------------------------------------
+
+st.subheader("Interpretación geométrica")
 
 st.write("""
-La figura aumentó
-su tamaño al doble.
+La figura aumentó su tamaño
+al doble.
+
+Todas las distancias
+se multiplicaron por:
+
+\[
+k=2
+\]
 """)
 
-st.subheader("Ejercicio interactivo")
+# ---------------------------------------------------------
+
+st.subheader("Ejercicio")
 
 st.write("""
-Aplique una homotecia
-de razón:
+Aplique una homotecia de razón:
 
-k = 3
+\[
+k=3
+\]
 
 al punto:
 
+\[
 (2,1)
+\]
 
-¿Cuál es el resultado?
+Ingrese la respuesta usando el formato:
+
+(x,y)
 """)
 
-respuesta4 = st.radio(
-    "Seleccione una opción",
-    [
-        "(6,3)",
-        "(5,3)",
-        "(2,3)",
-        "(3,1)"
-    ],
-    index=None,
+respuesta4 = st.text_input(
+    "Ingrese su respuesta",
     key="hom"
 )
 
-if respuesta4 is not None:
+if st.button("Verificar respuesta", key="btn_hom"):
 
-    if st.button("Verificar respuesta", key="btn_hom"):
+    if respuesta4.replace(" ","") == "(6,3)":
 
-        if respuesta4 == "(6,3)":
+        st.success("""
+Respuesta correcta.
 
-            st.success("""
-Correcto.
-
-En una homotecia:
+Aplicando:
 
 (x,y) → (kx,ky)
 
-Entonces:
+se obtiene:
 
 (2,1) → (6,3)
 """)
 
-            st.balloons()
+    else:
 
-        else:
-
-            st.error("""
+        st.error("""
 Respuesta incorrecta.
 
 Multiplique ambas coordenadas
@@ -510,7 +687,7 @@ st.divider()
 
 st.header("Comparación de transformaciones")
 
-tabla = {
+tabla = pd.DataFrame({
     "Transformación": [
         "Traslación",
         "Rotación",
@@ -535,7 +712,7 @@ tabla = {
         "No",
         "Sí"
     ]
-}
+})
 
 st.table(tabla)
 
@@ -551,67 +728,77 @@ st.write("""
 Considere el triángulo:
 
 A=(0,0)
+
 B=(2,0)
+
 C=(1,2)
 
-¿Qué ocurre si:
+Analice qué ocurre si:
 
 1. primero refleja la figura
-2. luego la traslada?
+2. luego la traslada
+
+¿El orden de las transformaciones
+puede modificar el resultado final?
 """)
 
-respuesta_final = st.radio(
-    "Seleccione una opción",
-    [
-        "El orden de las transformaciones no importa nunca",
-        "La figura cambia completamente de forma",
-        "El orden puede cambiar el resultado final",
-        "La traslación cambia el tamaño de la figura"
-    ],
-    index=None,
+respuesta_final = st.text_input(
+    "Escriba su conclusión",
     key="reto"
 )
 
-if respuesta_final is not None:
+if st.button("Verificar análisis", key="btn_reto"):
 
-    if st.button("Verificar respuesta", key="btn_reto"):
+    texto = respuesta_final.lower()
 
-        if respuesta_final == "El orden puede cambiar el resultado final":
+    if "sí" in texto or "si" in texto:
 
-            st.success("""
-Excelente análisis.
+        st.success("""
+Correcto.
 
 El orden de las transformaciones
-sí puede modificar
-la posición y orientación final.
+puede modificar:
+
+- la posición final
+- la orientación
+- el resultado geométrico
 """)
 
-            st.balloons()
+    else:
 
-        else:
-
-            st.error("""
-Revise nuevamente cómo actúan
-las composiciones de transformaciones.
+        st.error("""
+Revise nuevamente la composición
+de transformaciones geométricas.
 """)
 
 st.divider()
 
+# =========================================================
+# CONCLUSIÓN
+# =========================================================
+
 st.header("Conclusión")
 
-st.write("""
-Las transformaciones geométricas
-son fundamentales en:
+st.markdown("""
+<div class="info-box">
 
-- matemáticas
-- física
-- ingeniería
-- arquitectura
-- diseño gráfico
-- videojuegos
-- animación
+Las transformaciones geométricas son fundamentales en:
+
+<ul>
+<li>Matemáticas</li>
+<li>Física</li>
+<li>Ingeniería</li>
+<li>Arquitectura</li>
+<li>Diseño gráfico</li>
+<li>Videojuegos</li>
+<li>Animación</li>
+</ul>
 
 Comprenderlas permite analizar
 cómo cambian las figuras
-en el plano cartesiano.
-""")
+en el plano cartesiano y cómo
+pueden modelarse fenómenos reales
+mediante geometría.
+
+</div>
+""", unsafe_allow_html=True)
