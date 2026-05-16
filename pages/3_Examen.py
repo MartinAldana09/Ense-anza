@@ -1,56 +1,120 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
+import os
+from datetime import datetime
+
+# =========================================================
+# CONFIGURACIÓN
+# =========================================================
 
 st.set_page_config(
     page_title="Evaluación",
     layout="wide"
 )
 
-st.title("Evaluación Interactiva: Transformaciones en el Plano")
+# =========================================================
+# ESTILO
+# =========================================================
+
+st.markdown("""
+<style>
+
+.main {
+    background-color: #f5f7fb;
+}
+
+h1 {
+    color: #003366;
+    text-align: center;
+}
+
+h2, h3 {
+    color: #004080;
+}
+
+.block-container {
+    padding-top: 2rem;
+}
+
+.stButton>button {
+    width: 100%;
+    border-radius: 10px;
+    background-color: #003366;
+    color: white;
+    font-weight: bold;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+# =========================================================
+# TÍTULO
+# =========================================================
+
+st.title("Evaluación Interactiva: Transformaciones Geométricas")
 
 st.write("""
-Esta evaluación está diseñada para ayudarte a comprender:
+Esta evaluación combina:
 
-- Traslaciones
-- Rotaciones
-- Reflexiones
-- Homotecias
-- Composición de transformaciones
-- Interpretación geométrica
+- interpretación geométrica
+- análisis visual
+- razonamiento matemático
+- uso del simulador
+
+Utilice el simulador para resolver
+las preguntas donde sea necesario.
 """)
+
+st.divider()
 
 # =========================================================
 # DATOS ESTUDIANTE
 # =========================================================
 
-st.subheader("Información del estudiante")
+st.header("Información del estudiante")
 
-nombre = st.text_input("Nombre")
-curso = st.text_input("Curso")
+col_d1, col_d2 = st.columns(2)
+
+with col_d1:
+
+    nombre = st.text_input("Nombre completo")
+
+with col_d2:
+
+    curso = st.text_input("Curso")
 
 st.divider()
 
 # =========================================================
-# FUNCIONES GRAFICAR
+# FUNCIÓN GRAFICAR
 # =========================================================
 
-def dibujar(P1, P2=None, titulo="Plano"):
+def dibujar(P1, P2=None):
 
-    fig, ax = plt.subplots(figsize=(7,7))
+    fig, ax = plt.subplots(figsize=(8,8))
 
     P1_c = np.vstack([P1, P1[0]])
 
     ax.plot(
         P1_c[:,0],
         P1_c[:,1],
-        'k--',
-        linewidth=2,
+        linewidth=3,
+        linestyle='--',
         label="Figura original"
     )
 
+    ax.scatter(P1[:,0], P1[:,1], s=80)
+
     for i, p in enumerate(P1):
-        ax.text(p[0], p[1], f"A{i+1}", fontsize=12)
+
+        ax.text(
+            p[0],
+            p[1],
+            f"A{i+1}",
+            fontsize=12
+        )
 
     if P2 is not None:
 
@@ -59,13 +123,20 @@ def dibujar(P1, P2=None, titulo="Plano"):
         ax.plot(
             P2_c[:,0],
             P2_c[:,1],
-            'b-',
-            linewidth=2,
+            linewidth=3,
             label="Figura transformada"
         )
 
+        ax.scatter(P2[:,0], P2[:,1], s=80)
+
         for i, p in enumerate(P2):
-            ax.text(p[0], p[1], f"B{i+1}", fontsize=12)
+
+            ax.text(
+                p[0],
+                p[1],
+                f"B{i+1}",
+                fontsize=12
+            )
 
     ax.spines['left'].set_position('zero')
     ax.spines['bottom'].set_position('zero')
@@ -85,20 +156,6 @@ def dibujar(P1, P2=None, titulo="Plano"):
     st.pyplot(fig)
 
 # =========================================================
-# INTRODUCCIÓN
-# =========================================================
-
-st.header("Situación")
-
-st.write("""
-Un diseñador gráfico está usando transformaciones geométricas
-para mover figuras en el plano cartesiano.
-
-Tu objetivo será descubrir qué transformación ocurrió
-y luego intentar reproducirla usando el simulador.
-""")
-
-# =========================================================
 # FIGURAS
 # =========================================================
 
@@ -114,237 +171,141 @@ B = np.array([
     [3,7]
 ])
 
-st.subheader("Triángulos")
+# =========================================================
+# INTRODUCCIÓN
+# =========================================================
 
-col1, col2 = st.columns(2)
+st.header("Situación problema")
 
-with col1:
+st.write("""
+Un diseñador gráfico está utilizando transformaciones
+geométricas para modificar figuras en el plano cartesiano.
 
-    st.write("Triángulo original")
-
-    st.latex(r"A_1=\left(\frac12,\frac32\right)")
-    st.latex(r"A_2=\left(\frac72,\frac32\right)")
-    st.latex(r"A_3=\left(\frac12,\frac92\right)")
-
-with col2:
-
-    st.write("Triángulo transformado")
-
-    st.latex(r"B_1=(3,1)")
-    st.latex(r"B_2=(9,1)")
-    st.latex(r"B_3=(3,7)")
+Analice cuidadosamente las figuras y responda
+las preguntas.
+""")
 
 dibujar(A, B)
 
 # =========================================================
-# PREGUNTA 1
+# PREGUNTAS
 # =========================================================
+
+puntaje = 0
+
+# ---------------------------------------------------------
 
 st.divider()
 
 st.header("Pregunta 1")
 
 st.write("""
-¿Qué parece haber ocurrido con el tamaño del triángulo?
+¿Qué ocurrió con el tamaño del triángulo?
 """)
 
-respuesta1 = st.radio(
+r1 = st.radio(
     "Seleccione una opción",
     [
-        "El triángulo disminuyó",
-        "El triángulo conservó exactamente el mismo tamaño",
-        "El triángulo aumentó de tamaño",
-        "El triángulo desapareció"
+        "Disminuyó",
+        "Conservó exactamente el mismo tamaño",
+        "Aumentó",
+        "Desapareció"
     ],
-    key="p1"
+    key="r1"
 )
 
-if st.button("Validar pregunta 1"):
-
-    if respuesta1 == "El triángulo aumentó de tamaño":
-
-        st.success("""
-Correcto.
-
-El triángulo destino es más grande.
-Parece existir una homotecia o escala.
-""")
-
-    else:
-
-        st.error("""
-Incorrecto.
-
-Observa que las longitudes aumentaron.
-""")
-
-# =========================================================
-# PREGUNTA 2
-# =========================================================
+# ---------------------------------------------------------
 
 st.divider()
 
 st.header("Pregunta 2")
 
 st.write("""
-¿Qué transformación mueve una figura sin cambiar
-su tamaño ni su orientación?
+¿Qué transformación mueve una figura
+sin cambiar forma ni tamaño?
 """)
 
-respuesta2 = st.radio(
-    "Seleccione la transformación",
+r2 = st.radio(
+    "Seleccione una opción",
     [
         "Rotación",
-        "Homotecia",
         "Traslación",
+        "Homotecia",
         "Reflexión"
     ],
-    key="p2"
+    key="r2"
 )
 
-if st.button("Validar pregunta 2"):
-
-    if respuesta2 == "Traslación":
-
-        st.success("""
-Excelente.
-
-La traslación solo mueve la figura.
-""")
-
-    else:
-
-        st.warning("""
-No exactamente.
-
-Piensa cuál transformación solo desplaza
-todos los puntos la misma distancia.
-""")
-
-# =========================================================
-# PREGUNTA 3
-# =========================================================
+# ---------------------------------------------------------
 
 st.divider()
 
 st.header("Pregunta 3")
 
 st.write("""
-Si una figura rota 90° antihorario alrededor del origen,
-¿qué ocurre?
+Si un punto rota 90° antihorario
+respecto al origen:
+
+¿Qué ocurre?
 """)
 
-respuesta3 = st.radio(
+r3 = st.radio(
     "Seleccione una opción",
     [
-        "La figura cambia de tamaño",
         "La figura gira",
         "La figura desaparece",
-        "La figura se refleja"
+        "La figura se refleja",
+        "La figura cambia de tamaño"
     ],
-    key="p3"
+    key="r3"
 )
 
-if st.button("Validar pregunta 3"):
-
-    if respuesta3 == "La figura gira":
-
-        st.success("""
-Perfecto.
-
-Una rotación produce un giro alrededor de un punto.
-""")
-
-    else:
-
-        st.error("""
-Incorrecto.
-
-Una rotación produce un giro.
-""")
-
-# =========================================================
-# PREGUNTA 4
-# =========================================================
+# ---------------------------------------------------------
 
 st.divider()
 
 st.header("Pregunta 4")
 
 st.write("""
-¿Qué hace una reflexión respecto al eje X?
+¿Qué produce una reflexión
+respecto al eje X?
 """)
 
-respuesta4 = st.radio(
+r4 = st.radio(
     "Seleccione una opción",
     [
-        "Duplica el tamaño",
-        "Mueve la figura hacia arriba",
-        "Produce una imagen especular",
-        "Rota 180 grados"
+        "Un giro",
+        "Una imagen especular",
+        "Una traslación",
+        "Una ampliación"
     ],
-    key="p4"
+    key="r4"
 )
 
-if st.button("Validar pregunta 4"):
-
-    if respuesta4 == "Produce una imagen especular":
-
-        st.success("""
-Muy bien.
-
-La reflexión crea un efecto espejo.
-""")
-
-    else:
-
-        st.error("""
-Incorrecto.
-
-La reflexión produce una imagen especular.
-""")
-
-# =========================================================
-# PREGUNTA 5
-# =========================================================
+# ---------------------------------------------------------
 
 st.divider()
 
 st.header("Pregunta 5")
 
 st.write("""
-Si k = 2 en una homotecia,
-¿qué sucede con la figura?
+En una homotecia con:
+
+k = 2
+
+¿Qué ocurre?
 """)
 
-respuesta5 = st.radio(
+r5 = st.radio(
     "Seleccione una opción",
     [
-        "La figura se hace dos veces más grande",
         "La figura gira",
-        "La figura desaparece",
-        "La figura se traslada"
+        "La figura se reduce",
+        "La figura duplica su tamaño",
+        "La figura desaparece"
     ],
-    key="p5"
+    key="r5"
 )
-
-if st.button("Validar pregunta 5"):
-
-    if respuesta5 == "La figura se hace dos veces más grande":
-
-        st.success("""
-Correcto.
-
-La homotecia con k=2 duplica el tamaño.
-""")
-
-    else:
-
-        st.warning("""
-Incorrecto.
-
-Recuerda que la homotecia cambia el tamaño.
-""")
 
 # =========================================================
 # SIMULADOR
@@ -352,16 +313,13 @@ Recuerda que la homotecia cambia el tamaño.
 
 st.divider()
 
-st.header("Simulador para resolver el problema")
+st.header("Exploración con simulador")
 
 st.write("""
-Intenta transformar el triángulo original
-para hacerlo coincidir con el triángulo destino.
+Use esta sección para intentar transformar
+el triángulo original hasta hacerlo coincidir
+con el triángulo destino.
 """)
-
-# =========================================================
-# PARÁMETROS
-# =========================================================
 
 col1, col2, col3 = st.columns(3)
 
@@ -397,15 +355,9 @@ with col3:
 
 def escala(P, k):
 
-    A = k * np.eye(2)
+    A_mat = k * np.eye(2)
 
-    return P @ A.T
-
-# ---------------------------------------------------------
-
-def traslacion(P, a, b):
-
-    return P + np.array([a,b])
+    return P @ A_mat.T
 
 # ---------------------------------------------------------
 
@@ -413,12 +365,18 @@ def rotacion(P, theta):
 
     t = np.radians(theta)
 
-    A = np.array([
+    A_mat = np.array([
         [np.cos(t), -np.sin(t)],
         [np.sin(t),  np.cos(t)]
     ])
 
-    return P @ A.T
+    return P @ A_mat.T
+
+# ---------------------------------------------------------
+
+def traslacion(P, a, b):
+
+    return P + np.array([a,b])
 
 # =========================================================
 # APLICAR
@@ -427,16 +385,14 @@ def rotacion(P, theta):
 P_new = A.copy()
 
 P_new = escala(P_new, k)
-
 P_new = rotacion(P_new, theta)
-
 P_new = traslacion(P_new, a, b)
 
 # =========================================================
-# GRAFICAR RESULTADO
+# GRÁFICA
 # =========================================================
 
-fig, ax = plt.subplots(figsize=(8,8))
+fig, ax = plt.subplots(figsize=(9,9))
 
 A_c = np.vstack([A, A[0]])
 B_c = np.vstack([B, B[0]])
@@ -447,8 +403,8 @@ P_c = np.vstack([P_new, P_new[0]])
 ax.plot(
     A_c[:,0],
     A_c[:,1],
-    'k--',
-    linewidth=2,
+    linewidth=3,
+    linestyle='--',
     label="Original"
 )
 
@@ -457,8 +413,7 @@ ax.plot(
 ax.plot(
     B_c[:,0],
     B_c[:,1],
-    'g-',
-    linewidth=2,
+    linewidth=3,
     label="Destino"
 )
 
@@ -467,10 +422,11 @@ ax.plot(
 ax.plot(
     P_c[:,0],
     P_c[:,1],
-    'b-',
-    linewidth=2,
+    linewidth=3,
     label="Tu transformación"
 )
+
+ax.scatter(P_new[:,0], P_new[:,1], s=80)
 
 ax.spines['left'].set_position('zero')
 ax.spines['bottom'].set_position('zero')
@@ -500,19 +456,19 @@ if error < 0.01:
     st.success("""
 Excelente.
 
-Has encontrado correctamente
-la transformación.
+La transformación coincide correctamente.
 """)
 
 else:
 
     st.info("""
-La figura todavía no coincide exactamente.
+La figura todavía no coincide completamente.
 
-Sigue experimentando con:
+Continúe experimentando con:
+
+- traslación
 - escala
 - rotación
-- traslación
 """)
 
 # =========================================================
@@ -534,23 +490,23 @@ b_vec = np.array([a,b])
 
 st.write("Matriz A")
 
-st.write(A_mat)
+st.write(np.round(A_mat,3))
 
 st.write("Vector b")
 
-st.write(b_vec)
+st.write(np.round(b_vec,3))
 
 st.latex(r"T(x)=Ax+b")
 
 # =========================================================
-# PREGUNTA FINAL
+# REFLEXIÓN FINAL
 # =========================================================
 
 st.divider()
 
-st.header("Reflexión final")
+st.header("Pregunta final")
 
-respuesta_final = st.radio(
+r_final = st.radio(
     "¿El orden de las transformaciones puede cambiar el resultado?",
     [
         "Sí",
@@ -558,40 +514,106 @@ respuesta_final = st.radio(
     ]
 )
 
-if st.button("Validar reflexión final"):
-
-    if respuesta_final == "Sí":
-
-        st.success("""
-Correcto.
-
-El orden sí importa.
-Por ejemplo:
-rotar y luego trasladar
-no siempre da el mismo resultado
-que trasladar y luego rotar.
-""")
-
-    else:
-
-        st.error("""
-Incorrecto.
-
-El orden de las transformaciones
-sí puede cambiar el resultado.
-""")
-
 # =========================================================
-# FINAL
+# ENVIAR EVALUACIÓN
 # =========================================================
 
 st.divider()
 
 if st.button("Enviar evaluación"):
 
+    # -----------------------------------------------------
+    # CALIFICAR
+    # -----------------------------------------------------
+
+    if r1 == "Aumentó":
+        puntaje += 1
+
+    if r2 == "Traslación":
+        puntaje += 1
+
+    if r3 == "La figura gira":
+        puntaje += 1
+
+    if r4 == "Una imagen especular":
+        puntaje += 1
+
+    if r5 == "La figura duplica su tamaño":
+        puntaje += 1
+
+    if r_final == "Sí":
+        puntaje += 1
+
+    # -----------------------------------------------------
+    # CREAR REGISTRO
+    # -----------------------------------------------------
+
+    datos = {
+        "Fecha": [datetime.now().strftime("%Y-%m-%d %H:%M:%S")],
+        "Nombre": [nombre],
+        "Curso": [curso],
+        "Pregunta 1": [r1],
+        "Pregunta 2": [r2],
+        "Pregunta 3": [r3],
+        "Pregunta 4": [r4],
+        "Pregunta 5": [r5],
+        "Pregunta Final": [r_final],
+        "Puntaje": [puntaje]
+    }
+
+    df_nuevo = pd.DataFrame(datos)
+
+    archivo = "resultados.csv"
+
+    # -----------------------------------------------------
+    # GUARDAR CSV
+    # -----------------------------------------------------
+
+    if os.path.exists(archivo):
+
+        df_existente = pd.read_csv(archivo)
+
+        df_total = pd.concat(
+            [df_existente, df_nuevo],
+            ignore_index=True
+        )
+
+    else:
+
+        df_total = df_nuevo
+
+    df_total.to_csv(
+        archivo,
+        index=False
+    )
+
+    # -----------------------------------------------------
+    # MENSAJE
+    # -----------------------------------------------------
+
     st.success(f"""
 Evaluación enviada correctamente.
 
-Estudiante: {nombre}
-Curso: {curso}
+Puntaje obtenido: {puntaje}/6
 """)
+
+    # -----------------------------------------------------
+    # MOSTRAR TABLA
+    # -----------------------------------------------------
+
+    st.subheader("Resultados registrados")
+
+    st.dataframe(df_total)
+
+    # -----------------------------------------------------
+    # DESCARGAR CSV
+    # -----------------------------------------------------
+
+    with open(archivo, "rb") as f:
+
+        st.download_button(
+            label="Descargar resultados CSV",
+            data=f,
+            file_name="resultados.csv",
+            mime="text/csv"
+        )
