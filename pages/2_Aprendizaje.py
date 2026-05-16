@@ -290,9 +290,7 @@ st.subheader("Ejercicio")
 st.write("""
 Un dron se encuentra en el punto:
 
-\[
 (2,3)
-\]
 
 Luego realiza el siguiente movimiento:
 
@@ -301,7 +299,7 @@ Luego realiza el siguiente movimiento:
 
 Escriba la respuesta exactamente en el formato:
 
-( x , y )
+(x,y)
 """)
 
 respuesta1 = st.text_input(
@@ -361,7 +359,9 @@ centro de rotación.
 
     st.subheader("Representación algebraica")
 
-    :contentReference[oaicite:0]{index=0}
+    st.latex(
+        r"(x,y)\rightarrow(x\cos\theta-y\sin\theta,\ x\sin\theta+y\cos\theta)"
+    )
 
 with col2:
 
@@ -405,9 +405,7 @@ La figura se rotó:
 
 En una rotación de 90° antihorario:
 
-\[
-(x,y)\rightarrow(-y,x)
-\]
+(x,y) → (-y,x)
 """)
 
 # ---------------------------------------------------------
@@ -417,9 +415,7 @@ st.subheader("Ejercicio")
 st.write("""
 El punto:
 
-\[
 (2,0)
-\]
 
 se rota 90° antihorario alrededor del origen.
 
@@ -480,7 +476,9 @@ respecto a una recta.
 
     st.subheader("Reflexión respecto al eje X")
 
-    :contentReference[oaicite:1]{index=1}
+    st.latex(
+        r"(x,y)\rightarrow(x,-y)"
+    )
 
 with col2:
 
@@ -525,9 +523,7 @@ st.subheader("Ejercicio")
 st.write("""
 Refleje el punto:
 
-\[
 (4,-3)
-\]
 
 respecto al eje X.
 
@@ -587,7 +583,9 @@ manteniendo la forma geométrica.
 
     st.subheader("Representación algebraica")
 
-    :contentReference[oaicite:2]{index=2}
+    st.latex(
+        r"(x,y)\rightarrow(kx,ky)"
+    )
 
 with col2:
 
@@ -622,9 +620,7 @@ al doble.
 Todas las distancias
 se multiplicaron por:
 
-\[
 k=2
-\]
 """)
 
 # ---------------------------------------------------------
@@ -634,15 +630,11 @@ st.subheader("Ejercicio")
 st.write("""
 Aplique una homotecia de razón:
 
-\[
 k=3
-\]
 
 al punto:
 
-\[
 (2,1)
-\]
 
 Ingrese la respuesta usando el formato:
 
